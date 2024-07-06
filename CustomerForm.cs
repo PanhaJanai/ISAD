@@ -17,6 +17,7 @@ namespace PABMS
         public CustomerForm(SqlConnection connection)
         {
             InitializeComponent();
+            
         }
        
     }

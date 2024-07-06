@@ -28,22 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             gridPaymentTicket = new DataGridView();
             label14 = new Label();
             btnNew = new Button();
             btnUpdate = new Button();
-            btnSearch = new Button();
+            btnAdd = new Button();
             btnSave = new Button();
             txtSearch = new TextBox();
             panel1 = new Panel();
-            textBox1 = new TextBox();
+            txtCusName = new TextBox();
             label4 = new Label();
-            cmbCusName = new ComboBox();
+            cmbCusTel = new ComboBox();
             txtCusID = new TextBox();
             label7 = new Label();
             label8 = new Label();
             txtTicketID = new TextBox();
-            txtFullName = new TextBox();
+            txtTicketPrice = new TextBox();
             label3 = new Label();
             label6 = new Label();
             label2 = new Label();
@@ -52,18 +54,34 @@
             txtPaymentTicketID = new TextBox();
             label11 = new Label();
             label1 = new Label();
-            dateTimePicker1 = new DateTimePicker();
-            button1 = new Button();
+            datePayment = new DateTimePicker();
+            btnSearch = new Button();
             ((System.ComponentModel.ISupportInitialize)gridPaymentTicket).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // gridPaymentTicket
             // 
+            gridPaymentTicket.AllowUserToAddRows = false;
+            gridPaymentTicket.AllowUserToDeleteRows = false;
+            gridPaymentTicket.BackgroundColor = Color.FromArgb(128, 255, 128);
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Control;
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(0, 192, 0);
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            gridPaymentTicket.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             gridPaymentTicket.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            gridPaymentTicket.GridColor = SystemColors.Control;
             gridPaymentTicket.Location = new Point(315, 595);
             gridPaymentTicket.Name = "gridPaymentTicket";
+            gridPaymentTicket.ReadOnly = true;
             gridPaymentTicket.RowHeadersWidth = 51;
+            dataGridViewCellStyle6.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(0, 192, 0);
+            gridPaymentTicket.RowsDefaultCellStyle = dataGridViewCellStyle6;
             gridPaymentTicket.RowTemplate.Height = 29;
             gridPaymentTicket.Size = new Size(1052, 291);
             gridPaymentTicket.TabIndex = 68;
@@ -100,16 +118,16 @@
             btnUpdate.Text = "UPDATE";
             btnUpdate.UseVisualStyleBackColor = false;
             // 
-            // btnSearch
+            // btnAdd
             // 
-            btnSearch.BackColor = SystemColors.ActiveCaption;
-            btnSearch.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSearch.Location = new Point(608, 921);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(152, 51);
-            btnSearch.TabIndex = 64;
-            btnSearch.Text = "SEARCH";
-            btnSearch.UseVisualStyleBackColor = false;
+            btnAdd.BackColor = SystemColors.ActiveCaption;
+            btnAdd.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            btnAdd.Location = new Point(608, 921);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(152, 51);
+            btnAdd.TabIndex = 64;
+            btnAdd.Text = "ADD";
+            btnAdd.UseVisualStyleBackColor = false;
             // 
             // btnSave
             // 
@@ -135,14 +153,14 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(txtCusName);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(cmbCusName);
+            panel1.Controls.Add(cmbCusTel);
             panel1.Controls.Add(txtCusID);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(label8);
             panel1.Controls.Add(txtTicketID);
-            panel1.Controls.Add(txtFullName);
+            panel1.Controls.Add(txtTicketPrice);
             panel1.Controls.Add(label3);
             panel1.Controls.Add(label6);
             panel1.Location = new Point(319, 317);
@@ -150,14 +168,15 @@
             panel1.Size = new Size(1048, 189);
             panel1.TabIndex = 61;
             // 
-            // textBox1
+            // txtCusName
             // 
-            textBox1.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            textBox1.Location = new Point(733, 120);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(250, 34);
-            textBox1.TabIndex = 61;
+            txtCusName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtCusName.Location = new Point(733, 73);
+            txtCusName.Multiline = true;
+            txtCusName.Name = "txtCusName";
+            txtCusName.ReadOnly = true;
+            txtCusName.Size = new Size(250, 34);
+            txtCusName.TabIndex = 61;
             // 
             // label4
             // 
@@ -169,14 +188,17 @@
             label4.TabIndex = 60;
             label4.Text = "Customer Tel";
             // 
-            // cmbCusName
+            // cmbCusTel
             // 
-            cmbCusName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            cmbCusName.FormattingEnabled = true;
-            cmbCusName.Location = new Point(733, 72);
-            cmbCusName.Name = "cmbCusName";
-            cmbCusName.Size = new Size(250, 37);
-            cmbCusName.TabIndex = 59;
+            cmbCusTel.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbCusTel.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbCusTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cmbCusTel.FormattingEnabled = true;
+            cmbCusTel.Location = new Point(733, 120);
+            cmbCusTel.Name = "cmbCusTel";
+            cmbCusTel.Size = new Size(250, 37);
+            cmbCusTel.TabIndex = 59;
+            cmbCusTel.SelectedIndexChanged += cmbCusTel_SelectedIndexChanged;
             // 
             // txtCusID
             // 
@@ -220,14 +242,14 @@
             txtTicketID.Size = new Size(250, 34);
             txtTicketID.TabIndex = 3;
             // 
-            // txtFullName
+            // txtTicketPrice
             // 
-            txtFullName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtFullName.Location = new Point(207, 77);
-            txtFullName.Multiline = true;
-            txtFullName.Name = "txtFullName";
-            txtFullName.Size = new Size(250, 34);
-            txtFullName.TabIndex = 3;
+            txtTicketPrice.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtTicketPrice.Location = new Point(207, 77);
+            txtTicketPrice.Multiline = true;
+            txtTicketPrice.Name = "txtTicketPrice";
+            txtTicketPrice.Size = new Size(250, 34);
+            txtTicketPrice.TabIndex = 3;
             // 
             // label3
             // 
@@ -235,9 +257,9 @@
             label3.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
             label3.Location = new Point(22, 80);
             label3.Name = "label3";
-            label3.Size = new Size(121, 29);
+            label3.Size = new Size(141, 29);
             label3.TabIndex = 2;
-            label3.Text = "Ticket Qty";
+            label3.Text = "Ticket Price";
             // 
             // label6
             // 
@@ -312,37 +334,38 @@
             label1.TabIndex = 54;
             label1.Text = "Ticket Payment's Form";
             // 
-            // dateTimePicker1
+            // datePayment
             // 
-            dateTimePicker1.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            dateTimePicker1.Location = new Point(975, 166);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(392, 34);
-            dateTimePicker1.TabIndex = 69;
+            datePayment.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            datePayment.Location = new Point(975, 166);
+            datePayment.Name = "datePayment";
+            datePayment.Size = new Size(392, 34);
+            datePayment.TabIndex = 69;
             // 
-            // button1
+            // btnSearch
             // 
-            button1.BackColor = Color.Aqua;
-            button1.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            button1.Location = new Point(1215, 530);
-            button1.Name = "button1";
-            button1.Size = new Size(152, 56);
-            button1.TabIndex = 86;
-            button1.Text = "Print";
-            button1.UseVisualStyleBackColor = false;
+            btnSearch.BackColor = Color.Gray;
+            btnSearch.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            btnSearch.ForeColor = SystemColors.ButtonFace;
+            btnSearch.Location = new Point(698, 541);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(152, 37);
+            btnSearch.TabIndex = 86;
+            btnSearch.Text = "Search";
+            btnSearch.UseVisualStyleBackColor = false;
             // 
             // PaymentTicketForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1406, 1007);
-            Controls.Add(button1);
-            Controls.Add(dateTimePicker1);
+            Controls.Add(btnSearch);
+            Controls.Add(datePayment);
             Controls.Add(gridPaymentTicket);
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
-            Controls.Add(btnSearch);
+            Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
             Controls.Add(panel1);
@@ -369,12 +392,12 @@
         private Label label14;
         private Button btnNew;
         private Button btnUpdate;
-        private Button btnSearch;
+        private Button btnAdd;
         private Button btnSave;
         private TextBox txtSearch;
         private Panel panel1;
         private ComboBox cmDriver;
-        private TextBox txtFullName;
+        private TextBox txtTicketPrice;
         private Label label3;
         private Label label6;
         private TextBox txtBusNo;
@@ -384,14 +407,15 @@
         private TextBox txtPaymentTicketID;
         private Label label11;
         private Label label1;
-        private DateTimePicker dateTimePicker1;
-        private TextBox textBox1;
+        private DateTimePicker datePayment;
+        private TextBox txtCusName;
         private Label label4;
-        private ComboBox cmbCusName;
+        private ComboBox cmbCusTel;
         private TextBox txtCusID;
         private Label label7;
         private Label label8;
         private TextBox txtTicketID;
         private Button button1;
+        private Button btnSearch;
     }
 }

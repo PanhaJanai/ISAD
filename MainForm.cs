@@ -5,11 +5,12 @@ namespace PABMS
     public partial class MainForm : Form
     {
         //private string connectionString = "Server=ASUS-EXPERTBOOK\\SQLEXPRESS;Database=ISADE5G5;Integrated Security=True;";
-        private string connectionString = "Data Source=LAPTOP-2O9AK3I7\\SQLISADE5;Initial Catalog=ISAD;Integrated Security=True";
+        private string connectionString = "Data Source=LAPTOP-2O9AK3I7\\SQLISADE5;Initial Catalog=NewISAD;Integrated Security=True";
 
         SqlConnection connection;
 
         FormLogin formLogin;
+        static FormLogin staticLogin;
 
         public MainForm()
         {
@@ -102,6 +103,8 @@ namespace PABMS
             FormLogin.User user;
             user = formLogin.user;
             labelUsername.Text = $"Login as : {user.username}";
+
+            staticLogin = formLogin;
         }
 
         bool sideBarExpand = true;
@@ -171,6 +174,13 @@ namespace PABMS
             }
 
             return ret;
+        }
+
+        static public FormLogin.User getUser()
+        {
+            FormLogin.User user;
+            user = staticLogin.user;
+            return user;
         }
     }
 }

@@ -30,6 +30,9 @@ namespace PABMS
             InitializeComponent();
             SQLitePCL.Batteries.Init();
 
+            txtUsername.Text = "panha";
+            txtPassword.Text = "123";
+
             try
             {
                 using (var connection = new SqliteConnection(connectionString))
@@ -76,6 +79,11 @@ namespace PABMS
             }
         }
 
+        private void BtnLogin_Click(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void buttonLogin_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < users.Count; i++)
@@ -89,6 +97,11 @@ namespace PABMS
                     break;
                 }
             }
+        }
+
+        private void FormLogin_Load(object sender, EventArgs e)
+        {
+            btnLogin.PerformClick();
         }
     }
 }

@@ -115,6 +115,7 @@
             Name = "FormLogin";
             Text = "Login";
             WindowState = FormWindowState.Maximized;
+            Load += FormLogin_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);

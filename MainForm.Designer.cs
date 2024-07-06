@@ -213,6 +213,7 @@
             // 
             // btnTicket
             // 
+            btnTicket.Enabled = false;
             btnTicket.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
             btnTicket.Image = (Image)resources.GetObject("btnTicket.Image");
             btnTicket.ImageAlign = ContentAlignment.MiddleLeft;
@@ -243,6 +244,7 @@
             // 
             // btnPackage
             // 
+            btnPackage.Enabled = false;
             btnPackage.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
             btnPackage.Image = (Image)resources.GetObject("btnPackage.Image");
             btnPackage.ImageAlign = ContentAlignment.MiddleLeft;

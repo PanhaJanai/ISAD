@@ -1,21 +1,623 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace PABMS
 {
     public partial class PaymentTicketForm : Form
     {
+        class PaymentTicket
+        {
+            public int PaymentTicketID { get; set; }
+            public DateTime PaymentDate { get; set; }
+            public double PaymentAmount { get; set; }
+            public int TicketID { get; set; }
+            public double TicketPrice { get; set; }
+            public int CustomerID { get; set; }
+            public string CustomerName { get; set; }
+            public string CustomerTel { get; set; }
+            public int StaffID { get; set; }
+            public string StaffName { get; set; }
+            public string StaffTel { get; set; }
+
+            public void fromDataTable(DataRow row)
+            {
+                PaymentTicketID = Convert.ToInt32(row["PaymentTicketID"]);
+                PaymentDate = Convert.ToDateTime(row["PaymentDate"]);
+                PaymentAmount = Convert.ToDouble(row["PaymentAmount"]);
+                TicketID = Convert.ToInt32(row["TicketID"]);
+                TicketPrice = Convert.ToDouble(row["TicketPrice"]);
+                CustomerID = Convert.ToInt32(row["CustomerID"]);
+                CustomerName = row["CustomerName"].ToString();
+                CustomerTel = row["CustomerTel"].ToString();
+                StaffID = Convert.ToInt32(row["StaffID"]);
+                StaffName = row["StaffName"].ToString();
+                StaffTel = row["StaffTel"].ToString();
+            }
+        }
+
+        List<PaymentTicket> paymentTickets = new List<PaymentTicket>();
+        List<PaymentTicket> savedPaymentTickets = new List<PaymentTicket>();
+
+        DataTable tablePaymentTicket = new DataTable();
+        DataTable tableSave = new DataTable();
+        DataTable tableCus = new DataTable();
+
+        string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
+        List<SqlCommand> sqlCommands = new List<SqlCommand>();
+        FormLogin.User user;
         public PaymentTicketForm(SqlConnection connection)
         {
+            user = MainForm.getUser();
             InitializeComponent();
+
+            btnAdd.Click += new EventHandler(btnAdd_Click);
+            btnSave.Click += new EventHandler(btnSave_Click);
+            btnUpdate.Click += new EventHandler(btnUpdate_Click);
+            btnNew.Click += new EventHandler(btnNew_Click);
+            btnSearch.Click += new EventHandler(btnSearch_Click);
+
+            fillCmbCusTel();
+
+            gridPaymentTicket.CellClick += new DataGridViewCellEventHandler(gridPaymentTicket_CellClick);
+
+            fillGridWithNewData();
+            txtPaymentTicketID.Text = (tablePaymentTicket.Rows.Count + 1).ToString();
+            tableSave = tablePaymentTicket.Clone();
         }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            paymentTickets.Add(new PaymentTicket
+            {
+                PaymentTicketID = Convert.ToInt32(txtPaymentTicketID.Text),
+                PaymentDate = datePayment.Value,
+                PaymentAmount = Convert.ToDouble(txtAmount.Text),
+                TicketID = Convert.ToInt32(txtTicketID.Text),
+                TicketPrice = Convert.ToDouble(txtTicketPrice.Text),
+                CustomerID = Convert.ToInt32(txtCusID.Text),
+                CustomerName = txtCusName.SelectedText,
+                CustomerTel = cmbCusTel.Text,
+                StaffID = user.id,
+                StaffName = user.username,
+                StaffTel = user.password
+            });
+
+            MessageBox.Show("Data added successfully");
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            // convert all PaymentTicket objects to DataTable
+            tableSave.Clear();
+            tableSave = paymentTicketToDataTable(paymentTickets);
+
+            // Show dialogue box to make sure the data is correct
+            SavingDialogue saveDialogue = new SavingDialogue(tableSave);
+            saveDialogue.ShowDialog();
+            tableSave = saveDialogue.save_table;
+            saveDialogue.Dispose();
+
+            // convert all datatable row into PaymentTicket objects of savedPaymentTickets
+            foreach (DataRow row in tableSave.Rows)
+            {
+                PaymentTicket payment = new PaymentTicket();
+                payment.fromDataTable(row);
+                savedPaymentTickets.Add(payment);
+            }
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                foreach (PaymentTicket payment in savedPaymentTickets)
+                {
+                    string query = "INSERT INTO tbPaymentTicket (PaymentDate, PaymentAmount, TicketID, TicketPrice, CustomerID, CustomerName, CustomerTel, StaffID, StaffName, StaffTel) VALUES (@PaymentDate, @PaymentAmount, @TicketID, @TicketPrice, @CustomerID, @CustomerName, @CustomerTel, @StaffID, @StaffName, @StaffTel)";
+                    SqlCommand command = new SqlCommand(query, con);
+                    command.Parameters.AddWithValue("@PaymentDate", payment.PaymentDate);
+                    command.Parameters.AddWithValue("@PaymentAmount", payment.PaymentAmount);
+                    command.Parameters.AddWithValue("@TicketID", payment.TicketID);
+                    command.Parameters.AddWithValue("@TicketPrice", payment.TicketPrice);
+                    command.Parameters.AddWithValue("@CustomerID", payment.CustomerID);
+                    command.Parameters.AddWithValue("@CustomerName", payment.CustomerName);
+                    command.Parameters.AddWithValue("@CustomerTel", payment.CustomerTel);
+                    command.Parameters.AddWithValue("@StaffID", payment.StaffID);
+                    command.Parameters.AddWithValue("@StaffName", payment.StaffName);
+                    command.Parameters.AddWithValue("@StaffTel", payment.StaffTel);
+
+                    command.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+            tablePaymentTicket.Clear();
+            tableSave.Clear();
+            fillGridWithNewData();
+
+            MessageBox.Show("Data saved successfully");
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            txtPaymentTicketID.Text = (tablePaymentTicket.Rows.Count + 1).ToString();
+            txtAmount.Text = "";
+            datePayment.Value = DateTime.Now;
+            txtTicketID.Text = "";
+            txtTicketPrice.Text = "";
+            txtCusID.Text = "";
+            txtCusName.Text = "";
+            cmbCusTel.Text = "";
+            gridPaymentTicket.DataSource = tablePaymentTicket;
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            int paymentTicketID = Convert.ToInt32(txtPaymentTicketID.Text);
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "UPDATE tbPaymentTicket SET PaymentDate = @PaymentDate, PaymentAmount = @PaymentAmount, TicketID = @TicketID, TicketPrice = @TicketPrice, CustomerID = @CustomerID, CustomerName = @CustomerName, CustomerTel = @CustomerTel, StaffID = @StaffID, StaffName = @StaffName, StaffTel = @StaffTel WHERE PaymentTicketID = @PaymentTicketID";
+                SqlCommand command = new SqlCommand(query, con);
+                command.Parameters.AddWithValue("@PaymentDate", datePayment.Value);
+                command.Parameters.AddWithValue("@PaymentAmount", Convert.ToDouble(txtAmount.Text));
+                command.Parameters.AddWithValue("@TicketID", Convert.ToInt32(txtTicketID.Text));
+                command.Parameters.AddWithValue("@TicketPrice", Convert.ToDouble(txtTicketPrice.Text));
+                command.Parameters.AddWithValue("@CustomerID", Convert.ToInt32(txtCusID.Text));
+                command.Parameters.AddWithValue("@CustomerName", txtCusName.Text);
+                command.Parameters.AddWithValue("@CustomerTel", cmbCusTel.Text);
+                command.Parameters.AddWithValue("@StaffID", user.id);
+                command.Parameters.AddWithValue("@StaffName", user.username);
+                command.Parameters.AddWithValue("@StaffTel", user.password);
+                command.Parameters.AddWithValue("@PaymentTicketID", paymentTicketID);
+
+                command.ExecuteNonQuery();
+                con.Close();
+            }
+
+            tablePaymentTicket.Clear();
+            fillGridWithNewData();
+            MessageBox.Show("Data updated successfully");
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "SELECT * FROM tbPaymentTicket WHERE PaymentTicketID = @PaymentTicketID";
+                SqlCommand command = new SqlCommand(query, con);
+                command.Parameters.AddWithValue("@PaymentTicketID", Convert.ToInt32(txtSearch.Text));
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                using (DataTable dt = new DataTable())
+                {
+                    adapter.Fill(dt);
+                    gridPaymentTicket.DataSource = dt;
+                }
+                con.Close();
+            }
+        }
+
+        private void cmbCusTel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (DataRow row in tableCus.Rows)
+            {
+                if (row["CustomerTel"].ToString() == cmbCusTel.Text)
+                {
+                    txtCusID.Text = row["CustomerID"].ToString();
+                    txtCusName.Text = row["CustomerName"].ToString();
+                }
+            }
+        }
+
+        private void gridPaymentTicket_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            fillControlWithGridRow();
+        }
+
+        #region User generated functions
+
+        void fillCmbCusTel()
+        {
+            fillTableCus();
+            foreach (DataRow row in tableCus.Rows)
+            {
+                cmbCusTel.Items.Add(row["CustomerTel"].ToString());
+            }
+        }
+
+        void fillTableCus()
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "SELECT * FROM tbCustomer";
+                SqlDataAdapter adapter = new SqlDataAdapter(query, con);
+                adapter.Fill(tableCus);
+                con.Close();
+            }
+        }
+
+        void fillGridWithNewData()
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+                    string query = "SELECT * FROM tbPaymentTicket";
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, con);
+                    adapter.Fill(tablePaymentTicket);
+                    con.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"Error connecting to the database: {ex.Message}");
+            }
+            gridPaymentTicket.DataSource = tablePaymentTicket;
+        }
+
+        void fillControlWithGridRow()
+        {
+            int index = gridPaymentTicket.CurrentCell.RowIndex;
+
+            txtPaymentTicketID.Text = tablePaymentTicket.Rows[index]["PaymentTicketID"].ToString();
+            txtAmount.Text = tablePaymentTicket.Rows[index]["PaymentAmount"].ToString();
+            datePayment.Value = Convert.ToDateTime(tablePaymentTicket.Rows[index]["PaymentDate"].ToString());
+
+            txtTicketID.Text = tablePaymentTicket.Rows[index]["TicketID"].ToString();
+            txtTicketPrice.Text = tablePaymentTicket.Rows[index]["TicketPrice"].ToString();
+
+            txtCusID.Text = tablePaymentTicket.Rows[index]["CustomerID"].ToString();
+            txtCusName.Text = tablePaymentTicket.Rows[index]["CustomerName"].ToString();
+            cmbCusTel.Text = tablePaymentTicket.Rows[index]["CustomerTel"].ToString();
+        }
+
+        DataTable paymentTicketToDataTable(List<PaymentTicket> payments)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("PaymentTicketID", typeof(int));
+            table.Columns.Add("PaymentDate", typeof(DateTime));
+            table.Columns.Add("PaymentAmount", typeof(double));
+            table.Columns.Add("TicketID", typeof(int));
+            table.Columns.Add("TicketPrice", typeof(double));
+            table.Columns.Add("CustomerID", typeof(int));
+            table.Columns.Add("CustomerName", typeof(string));
+            table.Columns.Add("CustomerTel", typeof(string));
+            table.Columns.Add("StaffID", typeof(int));
+            table.Columns.Add("StaffName", typeof(string));
+            table.Columns.Add("StaffTel", typeof(string));
+
+            foreach (PaymentTicket payment in payments)
+            {
+                table.Rows.Add(payment.PaymentTicketID, payment.PaymentDate, payment.PaymentAmount, payment.TicketID, payment.TicketPrice, payment.CustomerID, payment.CustomerName, payment.CustomerTel, payment.StaffID, payment.StaffName, payment.StaffTel);
+            }
+
+            return table;
+        }
+
+        #endregion
+
+    }
+}
+*/
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Drawing;
+
+namespace PABMS
+{
+    public partial class PaymentTicketForm : Form
+    {
+        class PaymentTicket
+        {
+            public int PaymentTicketID { get; set; }
+            public DateTime PaymentDate { get; set; }
+            public double PaymentAmount { get; set; }
+            public int TicketID { get; set; }
+            public double TicketPrice { get; set; }
+            public int CustomerID { get; set; }
+            public string CustomerName { get; set; }
+            public string CustomerTel { get; set; }
+            public int StaffID { get; set; }
+            public string StaffName { get; set; }
+            public string StaffTel { get; set; }
+
+            public void fromDataTable(DataRow row)
+            {
+                PaymentTicketID = Convert.ToInt32(row["PaymentTicketID"]);
+                PaymentDate = Convert.ToDateTime(row["PaymentDate"]);
+                PaymentAmount = Convert.ToDouble(row["PaymentAmount"]);
+                TicketID = Convert.ToInt32(row["TicketID"]);
+                TicketPrice = Convert.ToDouble(row["TicketPrice"]);
+                CustomerID = Convert.ToInt32(row["CustomerID"]);
+                CustomerName = row["CustomerName"].ToString();
+                CustomerTel = row["CustomerTel"].ToString();
+                StaffID = Convert.ToInt32(row["StaffID"]);
+                StaffName = row["StaffName"].ToString();
+                StaffTel = row["StaffTel"].ToString();
+            }
+        }
+
+        List<PaymentTicket> paymentTickets = new List<PaymentTicket>();
+        List<PaymentTicket> savedPaymentTickets = new List<PaymentTicket>();
+
+        DataTable tablePaymentTicket = new DataTable();
+        DataTable tableSave = new DataTable();
+        DataTable tableCus = new DataTable();
+
+        string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
+        FormLogin.User user;
+
+        public PaymentTicketForm(SqlConnection connection)
+        {
+            user = MainForm.getUser();
+            InitializeComponent();
+
+            btnAdd.Click += new EventHandler(btnAdd_Click);
+            btnSave.Click += new EventHandler(btnSave_Click);
+            btnUpdate.Click += new EventHandler(btnUpdate_Click);
+            btnNew.Click += new EventHandler(btnNew_Click);
+            btnSearch.Click += new EventHandler(btnSearch_Click);
+
+            fillCmbCusTel();
+
+            gridPaymentTicket.CellClick += new DataGridViewCellEventHandler(gridPaymentTicket_CellClick);
+
+            fillGridWithNewData();
+            txtPaymentTicketID.Text = (tablePaymentTicket.Rows.Count + 1).ToString();
+            tableSave = tablePaymentTicket.Clone();
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            paymentTickets.Add(new PaymentTicket
+            {
+                PaymentTicketID = Convert.ToInt32(txtPaymentTicketID.Text),
+                PaymentDate = datePayment.Value,
+                PaymentAmount = Convert.ToDouble(txtAmount.Text),
+                TicketID = Convert.ToInt32(txtTicketID.Text),
+                TicketPrice = Convert.ToDouble(txtTicketPrice.Text),
+                CustomerID = Convert.ToInt32(txtCusID.Text),
+                CustomerName = txtCusName.SelectedText,
+                CustomerTel = cmbCusTel.Text,
+                StaffID = user.id,
+                StaffName = user.username,
+                StaffTel = user.password
+            });
+
+            MessageBox.Show("Data added successfully");
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            // convert all PaymentTicket objects to DataTable
+            tableSave = paymentTicketToDataTable(paymentTickets);
+
+            // Show dialogue box to make sure the data is correct
+            SavingDialogue saveDialogue = new SavingDialogue(tableSave);
+            saveDialogue.ShowDialog();
+            tableSave = saveDialogue.save_table;
+            saveDialogue.Dispose();
+
+            // convert all datatable row into PaymentTicket objects of savedPaymentTickets
+            foreach (DataRow row in tableSave.Rows)
+            {
+                PaymentTicket payment = new PaymentTicket();
+                payment.fromDataTable(row);
+                savedPaymentTickets.Add(payment);
+            }
+
+            ExecuteSqlCommands(savedPaymentTickets, "INSERT INTO tbPaymentTicket (PaymentDate, PaymentAmount, TicketID, TicketPrice, CustomerID, CustomerName, CustomerTel, StaffID, StaffName, StaffTel) VALUES (@PaymentDate, @PaymentAmount, @TicketID, @TicketPrice, @CustomerID, @CustomerName, @CustomerTel, @StaffID, @StaffName, @StaffTel)");
+
+            tablePaymentTicket.Clear();
+            tableSave.Clear();
+            fillGridWithNewData();
+
+            MessageBox.Show("Data saved successfully");
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            txtPaymentTicketID.Text = (tablePaymentTicket.Rows.Count + 1).ToString();
+            txtAmount.Text = "";
+            datePayment.Value = DateTime.Now;
+            txtTicketID.Text = "";
+            txtTicketPrice.Text = "";
+            txtCusID.Text = "";
+            txtCusName.Text = "";
+            cmbCusTel.Text = "";
+            gridPaymentTicket.DataSource = tablePaymentTicket;
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            int paymentTicketID = Convert.ToInt32(txtPaymentTicketID.Text);
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "UPDATE tbPaymentTicket SET PaymentDate = @PaymentDate, PaymentAmount = @PaymentAmount, TicketID = @TicketID, TicketPrice = @TicketPrice, CustomerID = @CustomerID, CustomerName = @CustomerName, CustomerTel = @CustomerTel, StaffID = @StaffID, StaffName = @StaffName, StaffTel = @StaffTel WHERE PaymentTicketID = @PaymentTicketID";
+                using (SqlCommand command = new SqlCommand(query, con))
+                {
+                    command.Parameters.AddWithValue("@PaymentDate", datePayment.Value);
+                    command.Parameters.AddWithValue("@PaymentAmount", Convert.ToDouble(txtAmount.Text));
+                    command.Parameters.AddWithValue("@TicketID", Convert.ToInt32(txtTicketID.Text));
+                    command.Parameters.AddWithValue("@TicketPrice", Convert.ToDouble(txtTicketPrice.Text));
+                    command.Parameters.AddWithValue("@CustomerID", Convert.ToInt32(txtCusID.Text));
+                    command.Parameters.AddWithValue("@CustomerName", txtCusName.Text);
+                    command.Parameters.AddWithValue("@CustomerTel", cmbCusTel.Text);
+                    command.Parameters.AddWithValue("@StaffID", user.id);
+                    command.Parameters.AddWithValue("@StaffName", user.username);
+                    command.Parameters.AddWithValue("@StaffTel", user.password);
+                    command.Parameters.AddWithValue("@PaymentTicketID", paymentTicketID);
+
+                    command.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+
+            tablePaymentTicket.Clear();
+            fillGridWithNewData();
+            MessageBox.Show("Data updated successfully");
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "SELECT * FROM tbPaymentTicket WHERE PaymentTicketID = @PaymentTicketID";
+                using (SqlCommand command = new SqlCommand(query, con))
+                {
+                    command.Parameters.AddWithValue("@PaymentTicketID", Convert.ToInt32(txtSearch.Text));
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    using (DataTable dt = new DataTable())
+                    {
+                        adapter.Fill(dt);
+                        gridPaymentTicket.DataSource = dt;
+                    }
+                }
+                con.Close();
+            }
+        }
+
+        private void cmbCusTel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (DataRow row in tableCus.Rows)
+            {
+                if (row["CustomerTel"].ToString() == cmbCusTel.Text)
+                {
+                    txtCusID.Text = row["CustomerID"].ToString();
+                    txtCusName.Text = row["CustomerName"].ToString();
+                }
+            }
+        }
+
+        private void gridPaymentTicket_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            fillControlWithGridRow();
+        }
+
+        #region User generated functions
+
+        void fillCmbCusTel()
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "SELECT * FROM tbCustomer";
+                SqlDataAdapter adapter = new SqlDataAdapter(query, con);
+                adapter.Fill(tableCus);
+                con.Close();
+            }
+
+            foreach (DataRow row in tableCus.Rows)
+            {
+                cmbCusTel.Items.Add(row["CustomerTel"].ToString());
+            }
+        }
+
+        void fillGridWithNewData()
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+                    string query = "SELECT * FROM tbPaymentTicket";
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, con);
+                    adapter.Fill(tablePaymentTicket);
+                    con.Close();
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"Error connecting to the database: {ex.Message}");
+            }
+            gridPaymentTicket.DataSource = tablePaymentTicket;
+        }
+
+        void fillControlWithGridRow()
+        {
+            int index = gridPaymentTicket.CurrentCell.RowIndex;
+            var columns = new Dictionary<string, TextBox>
+            {
+                { "PaymentTicketID", txtPaymentTicketID },
+                { "PaymentAmount", txtAmount },
+                { "TicketID", txtTicketID },
+                { "TicketPrice", txtTicketPrice },
+                { "CustomerID", txtCusID },
+                { "CustomerName", txtCusName }
+            };
+
+            foreach (var column in columns)
+            {
+                column.Value.Text = tablePaymentTicket.Rows[index][column.Key].ToString();
+            }
+
+            datePayment.Value = Convert.ToDateTime(tablePaymentTicket.Rows[index]["PaymentDate"].ToString());
+            cmbCusTel.Text = tablePaymentTicket.Rows[index]["CustomerTel"].ToString();
+        }
+
+        DataTable paymentTicketToDataTable(List<PaymentTicket> payments)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("PaymentTicketID", typeof(int));
+            table.Columns.Add("PaymentDate", typeof(DateTime));
+            table.Columns.Add("PaymentAmount", typeof(double));
+            table.Columns.Add("TicketID", typeof(int));
+            table.Columns.Add("TicketPrice", typeof(double));
+            table.Columns.Add("CustomerID", typeof(int));
+            table.Columns.Add("CustomerName", typeof(string));
+            table.Columns.Add("CustomerTel", typeof(string));
+            table.Columns.Add("StaffID", typeof(int));
+            table.Columns.Add("StaffName", typeof(string));
+            table.Columns.Add("StaffTel", typeof(string));
+
+            foreach (PaymentTicket payment in payments)
+            {
+                table.Rows.Add(payment.PaymentTicketID, payment.PaymentDate, payment.PaymentAmount, payment.TicketID, payment.TicketPrice, payment.CustomerID, payment.CustomerName, payment.CustomerTel, payment.StaffID, payment.StaffName, payment.StaffTel);
+            }
+
+            return table;
+        }
+
+        void ExecuteSqlCommands(List<PaymentTicket> payments, string query)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                foreach (PaymentTicket payment in payments)
+                {
+                    using (SqlCommand command = new SqlCommand(query, con))
+                    {
+                        command.Parameters.AddWithValue("@PaymentDate", payment.PaymentDate);
+                        command.Parameters.AddWithValue("@PaymentAmount", payment.PaymentAmount);
+                        command.Parameters.AddWithValue("@TicketID", payment.TicketID);
+                        command.Parameters.AddWithValue("@TicketPrice", payment.TicketPrice);
+                        command.Parameters.AddWithValue("@CustomerID", payment.CustomerID);
+                        command.Parameters.AddWithValue("@CustomerName", payment.CustomerName);
+                        command.Parameters.AddWithValue("@CustomerTel", payment.CustomerTel);
+                        command.Parameters.AddWithValue("@StaffID", payment.StaffID);
+                        command.Parameters.AddWithValue("@StaffName", payment.StaffName);
+                        command.Parameters.AddWithValue("@StaffTel", payment.StaffTel);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+                con.Close();
+            }
+        }
+
+        #endregion
     }
 }

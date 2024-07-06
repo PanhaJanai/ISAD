@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             datePayment = new DateTimePicker();
             gridSearch = new DataGridView();
             label14 = new Label();
@@ -39,23 +39,24 @@
             btnSave = new Button();
             txtSearch = new TextBox();
             panel1 = new Panel();
-            txtCustomerTel = new TextBox();
+            txtCustomerID = new TextBox();
             label4 = new Label();
-            cmCustomerID = new ComboBox();
+            cmCustomerTel = new ComboBox();
             txtCustomerName = new TextBox();
             label7 = new Label();
             label8 = new Label();
             cmbPackageName = new ComboBox();
-            cmPackageID = new ComboBox();
             label3 = new Label();
             label6 = new Label();
             label2 = new Label();
             txtAmount = new TextBox();
             label16 = new Label();
-            txtPaymentID = new TextBox();
+            txtPaymentPackageID = new TextBox();
             label11 = new Label();
             label1 = new Label();
-            button1 = new Button();
+            label5 = new Label();
+            txtPackageID = new TextBox();
+            txtPackagePrice = new TextBox();
             ((System.ComponentModel.ISupportInitialize)gridSearch).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -72,21 +73,21 @@
             // 
             gridSearch.AllowUserToAddRows = false;
             gridSearch.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            gridSearch.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Control;
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            gridSearch.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             gridSearch.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gridSearch.Location = new Point(306, 661);
             gridSearch.Name = "gridSearch";
             gridSearch.ReadOnly = true;
             gridSearch.RowHeadersWidth = 51;
-            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            gridSearch.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            gridSearch.RowsDefaultCellStyle = dataGridViewCellStyle6;
             gridSearch.RowTemplate.Height = 29;
             gridSearch.Size = new Size(1053, 255);
             gridSearch.TabIndex = 83;
@@ -154,14 +155,16 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Controls.Add(txtCustomerTel);
+            panel1.Controls.Add(txtPackagePrice);
+            panel1.Controls.Add(txtPackageID);
+            panel1.Controls.Add(txtCustomerID);
             panel1.Controls.Add(label4);
-            panel1.Controls.Add(cmCustomerID);
+            panel1.Controls.Add(cmCustomerTel);
             panel1.Controls.Add(txtCustomerName);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(label8);
             panel1.Controls.Add(cmbPackageName);
-            panel1.Controls.Add(cmPackageID);
+            panel1.Controls.Add(label5);
             panel1.Controls.Add(label3);
             panel1.Controls.Add(label6);
             panel1.Location = new Point(301, 376);
@@ -169,14 +172,14 @@
             panel1.Size = new Size(1053, 172);
             panel1.TabIndex = 76;
             // 
-            // txtCustomerTel
+            // txtCustomerID
             // 
-            txtCustomerTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtCustomerTel.Location = new Point(733, 119);
-            txtCustomerTel.Multiline = true;
-            txtCustomerTel.Name = "txtCustomerTel";
-            txtCustomerTel.Size = new Size(250, 34);
-            txtCustomerTel.TabIndex = 61;
+            txtCustomerID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtCustomerID.Location = new Point(743, 25);
+            txtCustomerID.Multiline = true;
+            txtCustomerID.Name = "txtCustomerID";
+            txtCustomerID.Size = new Size(250, 34);
+            txtCustomerID.TabIndex = 61;
             // 
             // label4
             // 
@@ -188,19 +191,19 @@
             label4.TabIndex = 60;
             label4.Text = "Customer Tel";
             // 
-            // cmCustomerID
+            // cmCustomerTel
             // 
-            cmCustomerID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            cmCustomerID.FormattingEnabled = true;
-            cmCustomerID.Location = new Point(733, 20);
-            cmCustomerID.Name = "cmCustomerID";
-            cmCustomerID.Size = new Size(250, 37);
-            cmCustomerID.TabIndex = 59;
+            cmCustomerTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cmCustomerTel.FormattingEnabled = true;
+            cmCustomerTel.Location = new Point(743, 116);
+            cmCustomerTel.Name = "cmCustomerTel";
+            cmCustomerTel.Size = new Size(250, 37);
+            cmCustomerTel.TabIndex = 59;
             // 
             // txtCustomerName
             // 
             txtCustomerName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtCustomerName.Location = new Point(735, 72);
+            txtCustomerName.Location = new Point(743, 72);
             txtCustomerName.Multiline = true;
             txtCustomerName.Name = "txtCustomerName";
             txtCustomerName.Size = new Size(250, 34);
@@ -234,15 +237,6 @@
             cmbPackageName.Name = "cmbPackageName";
             cmbPackageName.Size = new Size(250, 37);
             cmbPackageName.TabIndex = 53;
-            // 
-            // cmPackageID
-            // 
-            cmPackageID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            cmPackageID.FormattingEnabled = true;
-            cmPackageID.Location = new Point(215, 21);
-            cmPackageID.Name = "cmPackageID";
-            cmPackageID.Size = new Size(250, 37);
-            cmPackageID.TabIndex = 53;
             // 
             // label3
             // 
@@ -294,16 +288,16 @@
             label16.TabIndex = 73;
             label16.Text = "Amount";
             // 
-            // txtPaymentID
+            // txtPaymentPackageID
             // 
-            txtPaymentID.BorderStyle = BorderStyle.FixedSingle;
-            txtPaymentID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPaymentID.Location = new Point(450, 202);
-            txtPaymentID.Multiline = true;
-            txtPaymentID.Name = "txtPaymentID";
-            txtPaymentID.ReadOnly = true;
-            txtPaymentID.Size = new Size(250, 34);
-            txtPaymentID.TabIndex = 72;
+            txtPaymentPackageID.BorderStyle = BorderStyle.FixedSingle;
+            txtPaymentPackageID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtPaymentPackageID.Location = new Point(450, 202);
+            txtPaymentPackageID.Multiline = true;
+            txtPaymentPackageID.Name = "txtPaymentPackageID";
+            txtPaymentPackageID.ReadOnly = true;
+            txtPaymentPackageID.Size = new Size(250, 34);
+            txtPaymentPackageID.TabIndex = 72;
             // 
             // label11
             // 
@@ -325,23 +319,39 @@
             label1.TabIndex = 70;
             label1.Text = "Package Payment's Form";
             // 
-            // button1
+            // label5
             // 
-            button1.BackColor = Color.Aqua;
-            button1.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            button1.Location = new Point(1207, 599);
-            button1.Name = "button1";
-            button1.Size = new Size(152, 56);
-            button1.TabIndex = 85;
-            button1.Text = "Print";
-            button1.UseVisualStyleBackColor = false;
+            label5.AutoSize = true;
+            label5.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            label5.Location = new Point(26, 119);
+            label5.Name = "label5";
+            label5.Size = new Size(169, 29);
+            label5.TabIndex = 0;
+            label5.Text = "Package Price";
+            // 
+            // txtPackageID
+            // 
+            txtPackageID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtPackageID.Location = new Point(215, 23);
+            txtPackageID.Multiline = true;
+            txtPackageID.Name = "txtPackageID";
+            txtPackageID.Size = new Size(250, 34);
+            txtPackageID.TabIndex = 61;
+            // 
+            // txtPackagePrice
+            // 
+            txtPackagePrice.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtPackagePrice.Location = new Point(215, 116);
+            txtPackagePrice.Multiline = true;
+            txtPackagePrice.Name = "txtPackagePrice";
+            txtPackagePrice.Size = new Size(250, 34);
+            txtPackagePrice.TabIndex = 61;
             // 
             // PaymentPackageForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1437, 1102);
-            Controls.Add(button1);
             Controls.Add(datePayment);
             Controls.Add(gridSearch);
             Controls.Add(label14);
@@ -354,7 +364,7 @@
             Controls.Add(label2);
             Controls.Add(txtAmount);
             Controls.Add(label16);
-            Controls.Add(txtPaymentID);
+            Controls.Add(txtPaymentPackageID);
             Controls.Add(label11);
             Controls.Add(label1);
             FormBorderStyle = FormBorderStyle.None;
@@ -384,20 +394,20 @@
         private Label label11;
         private Label label1;
 
-        private TextBox txtPaymentID;
+        private TextBox txtPaymentPackageID;
         private TextBox txtAmount;
         private DateTimePicker datePayment;
 
-        private ComboBox cmCustomerID;
+        private ComboBox cmCustomerTel;
         private TextBox txtCustomerName;
-        private TextBox txtCustomerTel;
-
-        private ComboBox cmPackageID;
+        private TextBox txtCustomerID;
 
         private TextBox txtSearch;
         private DataGridView gridSearch;
         private Label label3;
         private ComboBox cmbPackageName;
-        private Button button1;
+        private Label label5;
+        private TextBox txtPackagePrice;
+        private TextBox txtPackageID;
     }
 }
