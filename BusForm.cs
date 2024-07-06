@@ -19,12 +19,11 @@ namespace PABMS
         SqlConnection connection_bus;
         SqlDataAdapter adapter_bus = new SqlDataAdapter();
         
-        public BusForm(SqlConnection connection)
+        public BusForm()
         {
             InitializeComponent();
-            connection_bus = connection;
-            adapter_bus.SelectCommand = new SqlCommand("SELECT * FROM tbBus", connection_bus);
-            adapter_bus.Fill(table_bus);
+            //adapter_bus.SelectCommand = new SqlCommand("SELECT * FROM tbBus", connection_bus);
+            //adapter_bus.Fill(table_bus);
         }
 
         #region User generated Functions

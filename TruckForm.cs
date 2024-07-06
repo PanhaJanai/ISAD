@@ -13,7 +13,7 @@ namespace PABMS
 {
     public partial class TruckForm : Form
     {
-        public TruckForm(SqlConnection connection)
+        public TruckForm()
         {
             InitializeComponent();
         }

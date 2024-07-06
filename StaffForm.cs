@@ -5,7 +5,7 @@ namespace PABMS
 {
     public partial class StaffForm : Form
     {
-        public StaffForm(SqlConnection connection)
+        public StaffForm()
         {
             InitializeComponent();
         }

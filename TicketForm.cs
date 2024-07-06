@@ -7,7 +7,7 @@ namespace PABMS
 {
     public partial class TicketForm : Form
     {
-        public TicketForm(SqlConnection connection)
+        public TicketForm()
         {
             InitializeComponent();
         }

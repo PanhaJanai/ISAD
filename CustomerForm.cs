@@ -14,7 +14,7 @@ namespace PABMS
     public partial class CustomerForm : Form
     {
         
-        public CustomerForm(SqlConnection connection)
+        public CustomerForm()
         {
             InitializeComponent();
             

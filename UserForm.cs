@@ -15,7 +15,7 @@ namespace PABMS
 
     public partial class UserForm : Form
     {
-        public UserForm(SqlConnection connection)
+        public UserForm()
         {
             InitializeComponent();
         }

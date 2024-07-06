@@ -502,7 +502,7 @@
             dateDeparture.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
             dateDeparture.Location = new Point(779, 461);
             dateDeparture.Name = "dateDeparture";
-            dateDeparture.Size = new Size(250, 34);
+            dateDeparture.Size = new Size(410, 34);
             dateDeparture.TabIndex = 54;
             // 
             // dateDelivery
@@ -510,7 +510,7 @@
             dateDelivery.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
             dateDelivery.Location = new Point(779, 420);
             dateDelivery.Name = "dateDelivery";
-            dateDelivery.Size = new Size(250, 34);
+            dateDelivery.Size = new Size(410, 34);
             dateDelivery.TabIndex = 54;
             // 
             // txtPackageName

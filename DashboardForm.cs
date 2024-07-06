@@ -13,7 +13,7 @@ namespace PABMS
 {
     public partial class DashboardForm : Form
     {
-        public DashboardForm(SqlConnection connection)
+        public DashboardForm()
         {
             InitializeComponent();
         }

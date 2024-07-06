@@ -1,4 +1,6 @@
+using Microsoft.VisualBasic;
 using System.Data.SqlClient;
+using System.Runtime.CompilerServices;
 
 namespace PABMS
 {
@@ -9,85 +11,197 @@ namespace PABMS
 
         SqlConnection connection;
 
+        DashboardForm dashboardForm;
+        TicketForm ticketForm;
+        PackageForm packageForm;
+        StaffForm staffForm;
+        CustomerForm customerForm;
+        UserForm userForm;
+        BusForm busForm;
+        TruckForm truckForm;
+        PaymentTicketForm paymentTicketForm;
+        PaymentPackageForm paymentPackageForm;
+
+        List<Form> visibleForms = new List<Form>();
+        List<Form> mainPanelForms = new List<Form>();
+
         FormLogin formLogin;
-        static FormLogin staticLogin;
+        public static FormLogin.User staticUser = null;
 
         public MainForm()
         {
-
             InitializeComponent();
 
             connection = new SqlConnection(connectionString);
             formLogin = new FormLogin();
             formLogin.ShowDialog();
 
+            staticUser = formLogin.user;
         }
         public void loadForm(object Form)
         {
-            if (this.PanelForm.Controls.Count > 0)
-                this.PanelForm.Controls.RemoveAt(0);
-
             Form f = Form as Form;
             f.TopLevel = false;
             f.Dock = DockStyle.Fill;
+            f.FormBorderStyle = FormBorderStyle.Fixed3D;
             this.PanelForm.Controls.Add(f);
             this.PanelForm.Tag = f;
-            f.Show();
+            f.Hide();
 
+        }
+
+        public void hideAllForms(params Form[] forms)
+        {
+            foreach (Form f in visibleForms)
+            {
+                if (!forms.Contains(f))
+                {
+                    f.Hide();
+                }
+            }
         }
         private void btnTicket_Click(object sender, EventArgs e)
         {
-            loadForm(new TicketForm(connection));
+            
+            if (ticketForm.Visible == false)
+            {
+                visibleForms.Add(ticketForm);
+                ticketForm.Show();
+            }
+            else
+            {
+                hideAllForms(ticketForm, staffForm);
+            }
         }
 
         private void btnDashboard_Click(object sender, EventArgs e)
         {
-            loadForm(new DashboardForm(connection));
+            
+            if (dashboardForm.Visible == false)
+            {
+                visibleForms.Add(dashboardForm);
+                dashboardForm.Show();
+            }
+            else
+            {
+                hideAllForms(dashboardForm, staffForm);
+            }
         }
 
         private void btnPackage_Click(object sender, EventArgs e)
         {
-            loadForm(new PackageForm(connection));
+            
+            if (packageForm.Visible == false)
+            {
+                visibleForms.Add(packageForm);
+                packageForm.Show();
+            }
+            else
+            {
+                hideAllForms(packageForm);
+            }
         }
 
         private void btnStaff_Click(object sender, EventArgs e)
         {
-            loadForm(new StaffForm(connection));
+            
+            if (staffForm.Visible == false)
+            {
+                visibleForms.Add(staffForm);
+                staffForm.Show();
+            }
+            else
+            {
+                hideAllForms(staffForm);
+            }
         }
 
         private void btnBus_Click(object sender, EventArgs e)
         {
-            loadForm(new BusForm(connection));
-
+            
+            if (busForm.Visible == false)
+            {
+                visibleForms.Add(busForm);
+                busForm.Show();
+            }
+            else
+            {
+                hideAllForms(busForm);
+            }
         }
 
         private void btnUser_Click(object sender, EventArgs e)
         {
-            loadForm(new UserForm(connection));
+            
+            if (userForm.Visible == false)
+            {
+                visibleForms.Add(userForm);
+                userForm.Show();
+            }
+            else
+            {
+                hideAllForms(userForm);
+            }
         }
 
         private void btnTruck_Click(object sender, EventArgs e)
         {
-            loadForm(new TruckForm(connection));
+            
+            if (truckForm.Visible == false)
+            {
+                visibleForms.Add(truckForm);
+                truckForm.Show();
+            }
+            else
+            {
+                hideAllForms(truckForm);
+            }
         }
         private void btnPayPackage_Click(object sender, EventArgs e)
         {
-            loadForm(new PaymentPackageForm(connection));
+            
+            if (paymentPackageForm.Visible == false)
+            {
+                visibleForms.Add(paymentPackageForm);
+                paymentPackageForm.Show();
+            }
+            else
+            {
+                hideAllForms(paymentPackageForm);
+            }
         }
 
         private void btnPayTicket_Click(object sender, EventArgs e)
         {
-            loadForm(new PaymentTicketForm(connection));
+            
+            if (paymentTicketForm.Visible == false)
+            {
+                visibleForms.Add(paymentPackageForm);
+                paymentTicketForm.Show();
+            }
+            else
+            {
+                hideAllForms(paymentTicketForm);
+            }
+        }
+
+        private void btnCustomer_Click(object sender, EventArgs e)
+        {
+            
+            if (customerForm.Visible == false)
+            {
+                visibleForms.Add(customerForm);
+                customerForm.Show();
+            }
+            else
+            {
+                hideAllForms(customerForm);
+            }
         }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void btnCustomer_Click(object sender, EventArgs e)
-        {
-            loadForm(new CustomerForm(connection));
         }
         private async void MainForm_Load(object sender, EventArgs e)
         {
@@ -104,7 +218,38 @@ namespace PABMS
             user = formLogin.user;
             labelUsername.Text = $"Login as : {user.username}";
 
-            staticLogin = formLogin;
+            dashboardForm = new DashboardForm();
+            ticketForm = new TicketForm();
+            packageForm = new PackageForm();
+            staffForm = new StaffForm();
+            customerForm = new CustomerForm();
+            userForm = new UserForm();
+            busForm = new BusForm();
+            truckForm = new TruckForm();
+            paymentTicketForm = new PaymentTicketForm();
+            paymentPackageForm = new PaymentPackageForm();
+
+            loadForm(ticketForm);
+            loadForm(dashboardForm);
+            loadForm(packageForm);
+            loadForm(staffForm);
+            loadForm(busForm);
+            loadForm(userForm);
+            loadForm(truckForm);
+            loadForm(paymentPackageForm);
+            loadForm(paymentTicketForm);
+            loadForm(customerForm);
+
+            mainPanelForms.Add(ticketForm);
+            mainPanelForms.Add(dashboardForm);
+            mainPanelForms.Add(packageForm);
+            mainPanelForms.Add(staffForm);
+            mainPanelForms.Add(busForm);
+            mainPanelForms.Add(userForm);
+            mainPanelForms.Add(truckForm);
+            mainPanelForms.Add(paymentPackageForm);
+            mainPanelForms.Add(paymentTicketForm);
+            mainPanelForms.Add(customerForm);
         }
 
         bool sideBarExpand = true;
@@ -174,13 +319,6 @@ namespace PABMS
             }
 
             return ret;
-        }
-
-        static public FormLogin.User getUser()
-        {
-            FormLogin.User user;
-            user = staticLogin.user;
-            return user;
         }
     }
 }

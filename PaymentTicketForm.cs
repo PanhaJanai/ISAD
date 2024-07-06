@@ -357,9 +357,9 @@ namespace PABMS
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
         FormLogin.User user;
 
-        public PaymentTicketForm(SqlConnection connection)
+        public PaymentTicketForm()
         {
-            user = MainForm.getUser();
+            user = MainForm.staticUser;
             InitializeComponent();
 
             btnAdd.Click += new EventHandler(btnAdd_Click);
@@ -504,7 +504,7 @@ namespace PABMS
 
         private void gridPaymentTicket_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            fillControlWithGridRow();
+            fillControlWithGridRow(gridPaymentTicket.CurrentRow);
         }
 
         #region User generated functions
@@ -546,9 +546,8 @@ namespace PABMS
             gridPaymentTicket.DataSource = tablePaymentTicket;
         }
 
-        void fillControlWithGridRow()
+        void fillControlWithGridRow(DataGridViewRow row)
         {
-            int index = gridPaymentTicket.CurrentCell.RowIndex;
             var columns = new Dictionary<string, TextBox>
             {
                 { "PaymentTicketID", txtPaymentTicketID },
@@ -561,11 +560,11 @@ namespace PABMS
 
             foreach (var column in columns)
             {
-                column.Value.Text = tablePaymentTicket.Rows[index][column.Key].ToString();
+                column.Value.Text = row.Cells[column.Key].Value.ToString();
             }
 
-            datePayment.Value = Convert.ToDateTime(tablePaymentTicket.Rows[index]["PaymentDate"].ToString());
-            cmbCusTel.Text = tablePaymentTicket.Rows[index]["CustomerTel"].ToString();
+            datePayment.Value = Convert.ToDateTime(row.Cells["PaymentDate"].Value.ToString());
+            cmbCusTel.Text = row.Cells["CustomerTel"].Value.ToString();
         }
 
         DataTable paymentTicketToDataTable(List<PaymentTicket> payments)

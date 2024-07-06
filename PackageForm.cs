@@ -8,7 +8,7 @@ namespace PABMS
 {
     public partial class PackageForm : Form
     {
-        public PackageForm(SqlConnection connection)
+        public PackageForm()
         {
             InitializeComponent();
         }
