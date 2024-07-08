@@ -28,35 +28,39 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataCus = new DataGridView();
+            gridCustomer = new DataGridView();
             label14 = new Label();
             btnNew = new Button();
             btnUpdate = new Button();
-            btnSearch = new Button();
+            btnAdd = new Button();
             btnSave = new Button();
             txtSearch = new TextBox();
-            txtFullName = new TextBox();
-            label2 = new Label();
-            txtPhone = new TextBox();
+            txtCustomerName = new TextBox();
             label16 = new Label();
             txtCusID = new TextBox();
             label11 = new Label();
             label1 = new Label();
-            rbFemale = new CheckBox();
-            rbMale = new CheckBox();
+            cbFemale = new CheckBox();
+            cbMale = new CheckBox();
             label3 = new Label();
-            ((System.ComponentModel.ISupportInitialize)DataCus).BeginInit();
+            label4 = new Label();
+            txtCusTel = new TextBox();
+            ((System.ComponentModel.ISupportInitialize)gridCustomer).BeginInit();
             SuspendLayout();
             // 
-            // DataCus
+            // gridCustomer
             // 
-            DataCus.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            DataCus.Location = new Point(287, 475);
-            DataCus.Name = "DataCus";
-            DataCus.RowHeadersWidth = 51;
-            DataCus.RowTemplate.Height = 29;
-            DataCus.Size = new Size(1064, 261);
-            DataCus.TabIndex = 68;
+            gridCustomer.AllowUserToAddRows = false;
+            gridCustomer.AllowUserToDeleteRows = false;
+            gridCustomer.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            gridCustomer.Location = new Point(287, 475);
+            gridCustomer.Name = "gridCustomer";
+            gridCustomer.ReadOnly = true;
+            gridCustomer.RowHeadersWidth = 51;
+            gridCustomer.RowTemplate.Height = 29;
+            gridCustomer.Size = new Size(1064, 261);
+            gridCustomer.TabIndex = 68;
+            gridCustomer.CellClick += gridCustomer_CellClick;
             // 
             // label14
             // 
@@ -77,7 +81,6 @@
             btnNew.TabIndex = 66;
             btnNew.Text = "NEW";
             btnNew.UseVisualStyleBackColor = false;
-            
             // 
             // btnUpdate
             // 
@@ -88,18 +91,16 @@
             btnUpdate.TabIndex = 65;
             btnUpdate.Text = "UPDATE";
             btnUpdate.UseVisualStyleBackColor = false;
-            
             // 
-            // btnSearch
+            // btnAdd
             // 
-            btnSearch.BackColor = SystemColors.ActiveCaption;
-            btnSearch.Location = new Point(564, 767);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(152, 51);
-            btnSearch.TabIndex = 64;
-            btnSearch.Text = "SEARCH";
-            btnSearch.UseVisualStyleBackColor = false;
-            
+            btnAdd.BackColor = SystemColors.ActiveCaption;
+            btnAdd.Location = new Point(564, 767);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(152, 51);
+            btnAdd.TabIndex = 64;
+            btnAdd.Text = "ADD";
+            btnAdd.UseVisualStyleBackColor = false;
             // 
             // btnSave
             // 
@@ -110,7 +111,6 @@
             btnSave.TabIndex = 63;
             btnSave.Text = "SAVE";
             btnSave.UseVisualStyleBackColor = false;
-            
             // 
             // txtSearch
             // 
@@ -122,45 +122,25 @@
             txtSearch.Size = new Size(250, 34);
             txtSearch.TabIndex = 62;
             // 
-            // txtFullName
+            // txtCustomerName
             // 
-            txtFullName.BorderStyle = BorderStyle.FixedSingle;
-            txtFullName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtFullName.Location = new Point(998, 208);
-            txtFullName.Multiline = true;
-            txtFullName.Name = "txtFullName";
-            txtFullName.Size = new Size(250, 34);
-            txtFullName.TabIndex = 60;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label2.Location = new Point(854, 213);
-            label2.Name = "label2";
-            label2.Size = new Size(124, 29);
-            label2.TabIndex = 59;
-            label2.Text = "Full Name";
-            // 
-            // txtPhone
-            // 
-            txtPhone.BorderStyle = BorderStyle.FixedSingle;
-            txtPhone.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPhone.Location = new Point(481, 275);
-            txtPhone.Multiline = true;
-            txtPhone.Name = "txtPhone";
-            txtPhone.Size = new Size(250, 34);
-            txtPhone.TabIndex = 58;
+            txtCustomerName.BorderStyle = BorderStyle.FixedSingle;
+            txtCustomerName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtCustomerName.Location = new Point(481, 255);
+            txtCustomerName.Multiline = true;
+            txtCustomerName.Name = "txtCustomerName";
+            txtCustomerName.Size = new Size(250, 34);
+            txtCustomerName.TabIndex = 58;
             // 
             // label16
             // 
             label16.AutoSize = true;
             label16.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label16.Location = new Point(287, 277);
+            label16.Location = new Point(287, 257);
             label16.Name = "label16";
-            label16.Size = new Size(176, 29);
+            label16.Size = new Size(188, 29);
             label16.TabIndex = 57;
-            label16.Text = "Phone Number";
+            label16.Text = "Customer Name";
             // 
             // txtCusID
             // 
@@ -193,37 +173,57 @@
             label1.TabIndex = 54;
             label1.Text = "Customer's Form";
             // 
-            // rbFemale
+            // cbFemale
             // 
-            rbFemale.AutoSize = true;
-            rbFemale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            rbFemale.Location = new Point(1121, 277);
-            rbFemale.Name = "rbFemale";
-            rbFemale.Size = new Size(117, 33);
-            rbFemale.TabIndex = 71;
-            rbFemale.Text = "Female";
-            rbFemale.UseVisualStyleBackColor = true;
+            cbFemale.AutoSize = true;
+            cbFemale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cbFemale.Location = new Point(1131, 257);
+            cbFemale.Name = "cbFemale";
+            cbFemale.Size = new Size(117, 33);
+            cbFemale.TabIndex = 71;
+            cbFemale.Text = "Female";
+            cbFemale.UseVisualStyleBackColor = true;
             // 
-            // rbMale
+            // cbMale
             // 
-            rbMale.AutoSize = true;
-            rbMale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            rbMale.Location = new Point(998, 276);
-            rbMale.Name = "rbMale";
-            rbMale.Size = new Size(88, 33);
-            rbMale.TabIndex = 70;
-            rbMale.Text = "Male";
-            rbMale.UseVisualStyleBackColor = true;
+            cbMale.AutoSize = true;
+            cbMale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cbMale.Location = new Point(1004, 256);
+            cbMale.Name = "cbMale";
+            cbMale.Size = new Size(88, 33);
+            cbMale.TabIndex = 70;
+            cbMale.Text = "Male";
+            cbMale.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label3.Location = new Point(854, 277);
+            label3.Location = new Point(805, 257);
             label3.Name = "label3";
             label3.Size = new Size(54, 29);
             label3.TabIndex = 69;
             label3.Text = "Sex";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            label4.Location = new Point(804, 213);
+            label4.Name = "label4";
+            label4.Size = new Size(125, 29);
+            label4.TabIndex = 57;
+            label4.Text = "Phone Tel";
+            // 
+            // txtCusTel
+            // 
+            txtCusTel.BorderStyle = BorderStyle.FixedSingle;
+            txtCusTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtCusTel.Location = new Point(998, 208);
+            txtCusTel.Multiline = true;
+            txtCusTel.Name = "txtCusTel";
+            txtCusTel.Size = new Size(250, 34);
+            txtCusTel.TabIndex = 58;
             // 
             // CustomerForm
             // 
@@ -231,19 +231,19 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1414, 1013);
             ControlBox = false;
-            Controls.Add(rbFemale);
-            Controls.Add(rbMale);
+            Controls.Add(cbFemale);
+            Controls.Add(cbMale);
             Controls.Add(label3);
-            Controls.Add(DataCus);
+            Controls.Add(gridCustomer);
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
-            Controls.Add(btnSearch);
+            Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
-            Controls.Add(txtFullName);
-            Controls.Add(label2);
-            Controls.Add(txtPhone);
+            Controls.Add(txtCusTel);
+            Controls.Add(txtCustomerName);
+            Controls.Add(label4);
             Controls.Add(label16);
             Controls.Add(txtCusID);
             Controls.Add(label11);
@@ -251,29 +251,29 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "CustomerForm";
             Text = "CustomerForm";
-            ((System.ComponentModel.ISupportInitialize)DataCus).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridCustomer).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private DataGridView DataCus;
+        private DataGridView gridCustomer;
         private Label label14;
         private Button btnNew;
         private Button btnUpdate;
-        private Button btnSearch;
+        private Button btnAdd;
         private Button btnSave;
         private TextBox txtSearch;
-        private TextBox txtFullName;
-        private Label label2;
-        private TextBox txtPhone;
+        private TextBox txtCustomerName;
         private Label label16;
         private TextBox txtCusID;
         private Label label11;
         private Label label1;
-        private CheckBox rbFemale;
-        private CheckBox rbMale;
+        private CheckBox cbFemale;
+        private CheckBox cbMale;
         private Label label3;
+        private Label label4;
+        private TextBox txtCusTel;
     }
 }

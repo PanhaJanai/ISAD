@@ -395,24 +395,24 @@ namespace PABMS
         {
             InitializeComponent();
 
-            InitializeForms();
             connection = new SqlConnection(connectionString);
-            formLogin = new FormLogin();
+            formLogin = new FormLogin(connection);
             formLogin.ShowDialog();
 
+            InitializeForms();
             staticUser = formLogin.user;
         }
 
         private void InitializeForms()
         {
             dashboardForm = new DashboardForm();
-            ticketForm = new TicketForm();
-            packageForm = new PackageForm();
+            ticketForm = new TicketForm(connection);
+            packageForm = new PackageForm(connection);
             staffForm = new StaffForm();
             customerForm = new CustomerForm();
             userForm = new UserForm();
-            busForm = new BusForm();
-            truckForm = new TruckForm();
+            busForm = new BusForm(connection);
+            truckForm = new TruckForm(connection);
             paymentTicketForm = new PaymentTicketForm();
             paymentPackageForm = new PaymentPackageForm();
 
@@ -477,7 +477,6 @@ namespace PABMS
             FormLogin.User user = formLogin.user;
             labelUsername.Text = $"Login as : {user.username}";
 
-            user.position = "Customer Service";
             if (user.position == "Customer Service")
             {
                 HideButtons(btnUser, btnStaff, btnBus, btnTruck);

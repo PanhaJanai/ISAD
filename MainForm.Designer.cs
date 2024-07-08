@@ -43,11 +43,11 @@
             btnTicket = new Button();
             btnStaff = new Button();
             btnPackage = new Button();
-            btnCustomer = new Button();
             btnBus = new Button();
             btnTruck = new Button();
             btnPayPackage = new Button();
             btnPayTicket = new Button();
+            btnCustomer = new Button();
             sideBarTransition = new System.Windows.Forms.Timer(components);
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -206,7 +206,6 @@
             // 
             // btnTicket
             // 
-            btnTicket.Enabled = false;
             btnTicket.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
             btnTicket.Image = (Image)resources.GetObject("btnTicket.Image");
             btnTicket.ImageAlign = ContentAlignment.MiddleLeft;
@@ -237,7 +236,6 @@
             // 
             // btnPackage
             // 
-            btnPackage.Enabled = false;
             btnPackage.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
             btnPackage.Image = (Image)resources.GetObject("btnPackage.Image");
             btnPackage.ImageAlign = ContentAlignment.MiddleLeft;
@@ -250,21 +248,6 @@
             btnPackage.Text = "Package";
             btnPackage.UseVisualStyleBackColor = true;
             btnPackage.Click += btnPackage_Click;
-            // 
-            // btnCustomer
-            // 
-            btnCustomer.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            btnCustomer.Image = (Image)resources.GetObject("btnCustomer.Image");
-            btnCustomer.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCustomer.Location = new Point(0, 378);
-            btnCustomer.Margin = new Padding(0, 3, 3, 3);
-            btnCustomer.Name = "btnCustomer";
-            btnCustomer.Padding = new Padding(11, 0, 0, 0);
-            btnCustomer.Size = new Size(315, 69);
-            btnCustomer.TabIndex = 14;
-            btnCustomer.Text = "Customer";
-            btnCustomer.UseVisualStyleBackColor = true;
-            btnCustomer.Click += btnCustomer_Click;
             // 
             // btnBus
             // 
@@ -325,6 +308,21 @@
             btnPayTicket.Text = "Payment Ticket";
             btnPayTicket.UseVisualStyleBackColor = true;
             btnPayTicket.Click += btnPayTicket_Click;
+            // 
+            // btnCustomer
+            // 
+            btnCustomer.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            btnCustomer.Image = (Image)resources.GetObject("btnCustomer.Image");
+            btnCustomer.ImageAlign = ContentAlignment.MiddleLeft;
+            btnCustomer.Location = new Point(0, 378);
+            btnCustomer.Margin = new Padding(0, 3, 3, 3);
+            btnCustomer.Name = "btnCustomer";
+            btnCustomer.Padding = new Padding(11, 0, 0, 0);
+            btnCustomer.Size = new Size(315, 69);
+            btnCustomer.TabIndex = 14;
+            btnCustomer.Text = "Customer";
+            btnCustomer.UseVisualStyleBackColor = true;
+            btnCustomer.Click += btnCustomer_Click;
             // 
             // sideBarTransition
             // 

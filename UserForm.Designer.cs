@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             label1 = new Label();
-            txtPassword = new TextBox();
+            txtUserPassword = new TextBox();
             label6 = new Label();
             txtUsername = new TextBox();
             label3 = new Label();
@@ -38,18 +38,17 @@
             label14 = new Label();
             btnNew = new Button();
             btnUpdate = new Button();
-            btnSearch = new Button();
+            btnAdd = new Button();
             btnSave = new Button();
             txtSearch = new TextBox();
-            gridSearch = new DataGridView();
+            gridUser = new DataGridView();
             txtUserID = new TextBox();
             label4 = new Label();
             txtStaffName = new TextBox();
-            txtStaffTel = new TextBox();
             label5 = new Label();
             label7 = new Label();
-            btnSearchStaff = new Button();
-            ((System.ComponentModel.ISupportInitialize)gridSearch).BeginInit();
+            cmbStaffTel = new ComboBox();
+            ((System.ComponentModel.ISupportInitialize)gridUser).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -62,16 +61,15 @@
             label1.TabIndex = 3;
             label1.Text = "User's Form";
             // 
-            // txtPassword
+            // txtUserPassword
             // 
-            txtPassword.BorderStyle = BorderStyle.FixedSingle;
-            txtPassword.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPassword.Location = new Point(439, 325);
-            txtPassword.Multiline = true;
-            txtPassword.Name = "txtPassword";
-            txtPassword.Size = new Size(250, 34);
-            txtPassword.TabIndex = 39;
-            
+            txtUserPassword.BorderStyle = BorderStyle.FixedSingle;
+            txtUserPassword.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtUserPassword.Location = new Point(439, 325);
+            txtUserPassword.Multiline = true;
+            txtUserPassword.Name = "txtUserPassword";
+            txtUserPassword.Size = new Size(250, 34);
+            txtUserPassword.TabIndex = 39;
             // 
             // label6
             // 
@@ -82,7 +80,6 @@
             label6.Size = new Size(120, 29);
             label6.TabIndex = 38;
             label6.Text = "Password";
-            
             // 
             // txtUsername
             // 
@@ -93,7 +90,6 @@
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(250, 34);
             txtUsername.TabIndex = 37;
-            
             // 
             // label3
             // 
@@ -104,7 +100,6 @@
             label3.Size = new Size(124, 29);
             label3.TabIndex = 36;
             label3.Text = "Username";
-            
             // 
             // txtStaffID
             // 
@@ -116,7 +111,6 @@
             txtStaffID.Name = "txtStaffID";
             txtStaffID.Size = new Size(250, 34);
             txtStaffID.TabIndex = 41;
-            
             // 
             // label2
             // 
@@ -127,18 +121,16 @@
             label2.Size = new Size(89, 29);
             label2.TabIndex = 40;
             label2.Text = "Staff ID";
-            
             // 
             // label14
             // 
             label14.AutoSize = true;
             label14.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label14.Location = new Point(302, 444);
+            label14.Location = new Point(302, 472);
             label14.Name = "label14";
             label14.Size = new Size(89, 29);
             label14.TabIndex = 52;
             label14.Text = "Search";
-            
             // 
             // btnNew
             // 
@@ -160,15 +152,15 @@
             btnUpdate.Text = "UPDATE";
             btnUpdate.UseVisualStyleBackColor = false;
             // 
-            // btnSearch
+            // btnAdd
             // 
-            btnSearch.BackColor = SystemColors.ActiveCaption;
-            btnSearch.Location = new Point(560, 779);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(152, 50);
-            btnSearch.TabIndex = 49;
-            btnSearch.Text = "SEARCH";
-            btnSearch.UseVisualStyleBackColor = false;
+            btnAdd.BackColor = SystemColors.ActiveCaption;
+            btnAdd.Location = new Point(560, 779);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(152, 50);
+            btnAdd.TabIndex = 49;
+            btnAdd.Text = "ADD";
+            btnAdd.UseVisualStyleBackColor = false;
             // 
             // btnSave
             // 
@@ -184,24 +176,25 @@
             // 
             txtSearch.BorderStyle = BorderStyle.FixedSingle;
             txtSearch.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtSearch.Location = new Point(439, 442);
+            txtSearch.Location = new Point(439, 470);
             txtSearch.Multiline = true;
             txtSearch.Name = "txtSearch";
             txtSearch.Size = new Size(250, 34);
             txtSearch.TabIndex = 46;
             // 
-            // gridSearch
+            // gridUser
             // 
-            gridSearch.AllowUserToAddRows = false;
-            gridSearch.AllowUserToDeleteRows = false;
-            gridSearch.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridSearch.Location = new Point(302, 527);
-            gridSearch.Name = "gridSearch";
-            gridSearch.ReadOnly = true;
-            gridSearch.RowHeadersWidth = 51;
-            gridSearch.RowTemplate.Height = 29;
-            gridSearch.Size = new Size(1004, 188);
-            gridSearch.TabIndex = 53;
+            gridUser.AllowUserToAddRows = false;
+            gridUser.AllowUserToDeleteRows = false;
+            gridUser.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            gridUser.Location = new Point(302, 527);
+            gridUser.Name = "gridUser";
+            gridUser.ReadOnly = true;
+            gridUser.RowHeadersWidth = 51;
+            gridUser.RowTemplate.Height = 29;
+            gridUser.Size = new Size(1004, 188);
+            gridUser.TabIndex = 53;
+            gridUser.CellClick += gridUser_CellClick;
             // 
             // txtUserID
             // 
@@ -215,7 +208,6 @@
             txtUserID.ReadOnly = true;
             txtUserID.Size = new Size(250, 34);
             txtUserID.TabIndex = 36;
-            
             // 
             // label4
             // 
@@ -227,7 +219,6 @@
             label4.Size = new Size(93, 29);
             label4.TabIndex = 36;
             label4.Text = "User ID";
-            
             // 
             // txtStaffName
             // 
@@ -238,18 +229,6 @@
             txtStaffName.Name = "txtStaffName";
             txtStaffName.Size = new Size(250, 34);
             txtStaffName.TabIndex = 41;
-            
-            // 
-            // txtStaffTel
-            // 
-            txtStaffTel.BorderStyle = BorderStyle.FixedSingle;
-            txtStaffTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtStaffTel.Location = new Point(876, 325);
-            txtStaffTel.Multiline = true;
-            txtStaffTel.Name = "txtStaffTel";
-            txtStaffTel.Size = new Size(250, 34);
-            txtStaffTel.TabIndex = 41;
-            
             // 
             // label5
             // 
@@ -260,7 +239,6 @@
             label5.Size = new Size(131, 29);
             label5.TabIndex = 40;
             label5.Text = "Staff Name";
-            
             // 
             // label7
             // 
@@ -271,39 +249,35 @@
             label7.Size = new Size(102, 29);
             label7.TabIndex = 40;
             label7.Text = "Staff Tel";
-            
             // 
-            // btnSearchStaff
+            // cmbStaffTel
             // 
-            btnSearchStaff.BackColor = SystemColors.ActiveCaption;
-            btnSearchStaff.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSearchStaff.Location = new Point(1132, 269);
-            btnSearchStaff.Name = "btnSearchStaff";
-            btnSearchStaff.Size = new Size(174, 34);
-            btnSearchStaff.TabIndex = 49;
-            btnSearchStaff.Text = "SEARCH STAFF";
-            btnSearchStaff.UseVisualStyleBackColor = false;
+            cmbStaffTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cmbStaffTel.FormattingEnabled = true;
+            cmbStaffTel.Location = new Point(876, 325);
+            cmbStaffTel.Name = "cmbStaffTel";
+            cmbStaffTel.Size = new Size(250, 37);
+            cmbStaffTel.TabIndex = 60;
             // 
             // UserForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1516, 878);
-            Controls.Add(gridSearch);
+            Controls.Add(cmbStaffTel);
+            Controls.Add(gridUser);
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
-            Controls.Add(btnSearchStaff);
-            Controls.Add(btnSearch);
+            Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
-            Controls.Add(txtStaffTel);
             Controls.Add(txtStaffName);
             Controls.Add(txtStaffID);
             Controls.Add(label7);
             Controls.Add(label5);
             Controls.Add(label2);
-            Controls.Add(txtPassword);
+            Controls.Add(txtUserPassword);
             Controls.Add(label6);
             Controls.Add(txtUserID);
             Controls.Add(txtUsername);
@@ -314,7 +288,7 @@
             Name = "UserForm";
             Text = "UserForm";
             WindowState = FormWindowState.Maximized;
-            ((System.ComponentModel.ISupportInitialize)gridSearch).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridUser).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -323,7 +297,7 @@
 
         private Label label1;
         private TextBox txtUsername;
-        private TextBox txtPassword;
+        private TextBox txtUserPassword;
         private TextBox txtStaffID;
         private Label label6;
         private Label label3;
@@ -331,16 +305,15 @@
         private Label label14;
         private Button btnNew;
         private Button btnUpdate;
-        private Button btnSearch;
+        private Button btnAdd;
         private TextBox txtSearch;
         private Button btnSave;
-        private DataGridView gridSearch;
+        private DataGridView gridUser;
         private TextBox txtUserID;
         private Label label4;
         private TextBox txtStaffName;
-        private TextBox txtStaffTel;
         private Label label5;
         private Label label7;
-        private Button btnSearchStaff;
+        private ComboBox cmbStaffTel;
     }
 }

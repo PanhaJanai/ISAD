@@ -84,7 +84,7 @@ namespace PABMS
                 CustomerID = Convert.ToInt32(txtCusID.Text),
                 CustomerName = txtCusName.SelectedText,
                 CustomerTel = cmbCusTel.Text,
-                StaffID = user.id,
+                StaffID = user.staffID,
                 StaffName = user.username,
                 StaffTel = user.password,
                 PackageName = txtPackageName.Text
@@ -152,7 +152,7 @@ namespace PABMS
                     command.Parameters.AddWithValue("@CustomerID", Convert.ToInt32(txtCusID.Text));
                     command.Parameters.AddWithValue("@CustomerName", txtCusName.Text);
                     command.Parameters.AddWithValue("@CustomerTel", cmbCusTel.Text);
-                    command.Parameters.AddWithValue("@StaffID", user.id);
+                    command.Parameters.AddWithValue("@StaffID", user.staffID);
                     command.Parameters.AddWithValue("@StaffName", user.username);
                     command.Parameters.AddWithValue("@StaffTel", user.password);
                     command.Parameters.AddWithValue("@PackageName", txtPackageName.Text);

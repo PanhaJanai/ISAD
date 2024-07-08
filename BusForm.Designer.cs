@@ -289,6 +289,7 @@
             DataBus.RowTemplate.Height = 29;
             DataBus.Size = new Size(971, 277);
             DataBus.TabIndex = 53;
+            DataBus.CellClick += DataBus_CellClick_1;
             // 
             // BusForm
             // 

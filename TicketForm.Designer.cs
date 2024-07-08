@@ -37,7 +37,7 @@
             label2 = new Label();
             panel2 = new Panel();
             txtStaffID = new TextBox();
-            cmStaffName = new ComboBox();
+            cmbStaffName = new ComboBox();
             textBox10 = new TextBox();
             label6 = new Label();
             label7 = new Label();
@@ -96,6 +96,7 @@
             cmCusName.Name = "cmCusName";
             cmCusName.Size = new Size(178, 37);
             cmCusName.TabIndex = 31;
+            cmCusName.SelectedIndexChanged += cmCusID_SelectedIndexChanged;
             // 
             // txtCusPhone
             // 
@@ -157,7 +158,7 @@
             // 
             panel2.BorderStyle = BorderStyle.FixedSingle;
             panel2.Controls.Add(txtStaffID);
-            panel2.Controls.Add(cmStaffName);
+            panel2.Controls.Add(cmbStaffName);
             panel2.Controls.Add(textBox10);
             panel2.Controls.Add(label6);
             panel2.Controls.Add(label7);
@@ -178,14 +179,15 @@
             txtStaffID.Size = new Size(178, 34);
             txtStaffID.TabIndex = 30;
             // 
-            // cmStaffName
+            // cmbStaffName
             // 
-            cmStaffName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            cmStaffName.FormattingEnabled = true;
-            cmStaffName.Location = new Point(175, 79);
-            cmStaffName.Name = "cmStaffName";
-            cmStaffName.Size = new Size(178, 37);
-            cmStaffName.TabIndex = 30;
+            cmbStaffName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cmbStaffName.FormattingEnabled = true;
+            cmbStaffName.Location = new Point(175, 79);
+            cmbStaffName.Name = "cmbStaffName";
+            cmbStaffName.Size = new Size(178, 37);
+            cmbStaffName.TabIndex = 30;
+            cmbStaffName.SelectedIndexChanged += cmbStaffName_SelectedIndexChanged;
             // 
             // textBox10
             // 
@@ -262,6 +264,7 @@
             cmbBusNumber.Name = "cmbBusNumber";
             cmbBusNumber.Size = new Size(178, 37);
             cmbBusNumber.TabIndex = 28;
+            cmbBusNumber.SelectedIndexChanged += cmBusName_SelectedIndexChanged;
             // 
             // txtTicketPrice
             // 
@@ -421,6 +424,7 @@
             btnSave.TabIndex = 21;
             btnSave.Text = "SAVE";
             btnSave.UseVisualStyleBackColor = false;
+            btnSave.Click += btnSave_Click;
             // 
             // btnSearch
             // 
@@ -432,6 +436,7 @@
             btnSearch.TabIndex = 22;
             btnSearch.Text = "SEARCH";
             btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
             // 
             // btnUpdate
             // 
@@ -443,6 +448,7 @@
             btnUpdate.TabIndex = 23;
             btnUpdate.Text = "UPDATE";
             btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += btnUpdate_Click;
             // 
             // btnNew
             // 
@@ -454,6 +460,7 @@
             btnNew.TabIndex = 24;
             btnNew.Text = "NEW";
             btnNew.UseVisualStyleBackColor = false;
+            btnNew.Click += btnNew_Click;
             // 
             // label14
             // 
@@ -493,6 +500,7 @@
             gridTicket.RowTemplate.Height = 29;
             gridTicket.Size = new Size(1227, 287);
             gridTicket.TabIndex = 28;
+            gridTicket.CellClick += gridTicket_CellClick;
             // 
             // TicketForm
             // 
@@ -527,6 +535,7 @@
             Name = "TicketForm";
             Text = "TicketForm";
             WindowState = FormWindowState.Maximized;
+            Load += TicketForm_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
@@ -575,7 +584,7 @@
         private DateTimePicker dtpDeparture;
         private DateTimePicker dtpPurchase;
         private ComboBox cmbBusNumber;
-        private ComboBox cmStaffName;
+        private ComboBox cmbStaffName;
         private TextBox txtBusID;
         private TextBox txtStaffID;
         private ComboBox cmCusName;
