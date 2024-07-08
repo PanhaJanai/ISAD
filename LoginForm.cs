@@ -6,6 +6,10 @@ using SQLitePCL;
 
 namespace PABMS
 {
+    /*
+     * This form is ran on SQLite3 so Microsoft SQL Server's database schema is different
+     *
+     */
     public partial class FormLogin : Form
     {
         string projectPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
@@ -17,6 +21,7 @@ namespace PABMS
             public int id;
             public string username;
             public string password;
+            public string position;
             public string connectionString;
         }
 
@@ -51,6 +56,7 @@ namespace PABMS
                             u.id = reader.GetInt32(0);
                             u.username = reader.GetString(1);
                             u.password = reader.GetString(2);
+                            u.position = reader.GetString(3);
 
                             try
                             {

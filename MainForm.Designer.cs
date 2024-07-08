@@ -150,16 +150,19 @@
             sideBar.Controls.Add(btnTicket, 0, 1);
             sideBar.Controls.Add(btnStaff, 0, 3);
             sideBar.Controls.Add(btnPackage, 0, 2);
-            sideBar.Controls.Add(btnCustomer, 0, 5);
             sideBar.Controls.Add(btnBus, 0, 6);
             sideBar.Controls.Add(btnTruck, 0, 7);
             sideBar.Controls.Add(btnPayPackage, 0, 9);
             sideBar.Controls.Add(btnPayTicket, 0, 8);
+            sideBar.Controls.Add(btnCustomer, 0, 5);
             sideBar.Dock = DockStyle.Left;
             sideBar.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
             sideBar.Location = new Point(0, 0);
             sideBar.Name = "sideBar";
-            sideBar.RowCount = 10;
+            sideBar.RowCount = 11;
+            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
+            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
+            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
             sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
             sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
             sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
@@ -168,16 +171,6 @@
             sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
             sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
             sideBar.RowStyles.Add(new RowStyle());
-            sideBar.RowStyles.Add(new RowStyle());
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            sideBar.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             sideBar.Size = new Size(319, 761);
             sideBar.TabIndex = 5;
             // 
