@@ -10,7 +10,6 @@ namespace PABMS
         SqlDataAdapter adapter = new SqlDataAdapter();
         DataTable table = new DataTable();
         SqlConnection connection;
-
         public PackageForm(SqlConnection connection)
         {
             this.connection = connection;
@@ -170,7 +169,7 @@ namespace PABMS
                     MessageBox.Show("Data updated successfully.");
                 else
                     MessageBox.Show("Data update failed.");
-
+                
                 showPackages();
             }
         }

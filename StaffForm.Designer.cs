@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StaffForm));
             label1 = new Label();
             label15 = new Label();
             label16 = new Label();
@@ -37,34 +36,33 @@
             label12 = new Label();
             txtID = new TextBox();
             label11 = new Label();
-            rbMale = new CheckBox();
+            cbMale = new CheckBox();
             txtStaffAddress = new TextBox();
             Address = new Label();
             txtStaffPosition = new TextBox();
             label3 = new Label();
-            txtStaffPhone = new TextBox();
+            txtStaffTel = new TextBox();
             label6 = new Label();
-            rbStoppedWork = new CheckBox();
+            cbStoppedWork = new CheckBox();
             label5 = new Label();
-            pbPhoto = new PictureBox();
+            pbStaffPhoto = new PictureBox();
             label14 = new Label();
             btnNew = new Button();
             btnUpdate = new Button();
-            btnSearch = new Button();
+            btnAdd = new Button();
             btnSave = new Button();
             txtSearch = new TextBox();
             dtpBirthDate = new DateTimePicker();
             txtStaffSalary = new TextBox();
             label2 = new Label();
             bindingSource1 = new BindingSource(components);
-            rbFemale = new CheckBox();
+            cbFemale = new CheckBox();
             dtpHiredDate = new DateTimePicker();
             label4 = new Label();
-            btnBrowsePhoto = new Button();
-            DataStaff = new DataGridView();
-            ((System.ComponentModel.ISupportInitialize)pbPhoto).BeginInit();
+            gridStaff = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)pbStaffPhoto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)DataStaff).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridStaff).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -81,7 +79,7 @@
             // 
             label15.AutoSize = true;
             label15.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label15.Location = new Point(190, 412);
+            label15.Location = new Point(190, 357);
             label15.Name = "label15";
             label15.Size = new Size(118, 29);
             label15.TabIndex = 25;
@@ -137,16 +135,16 @@
             label11.TabIndex = 19;
             label11.Text = "Staff ID";
             // 
-            // rbMale
+            // cbMale
             // 
-            rbMale.AutoSize = true;
-            rbMale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            rbMale.Location = new Point(326, 187);
-            rbMale.Name = "rbMale";
-            rbMale.Size = new Size(88, 33);
-            rbMale.TabIndex = 28;
-            rbMale.Text = "Male";
-            rbMale.UseVisualStyleBackColor = true;
+            cbMale.AutoSize = true;
+            cbMale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cbMale.Location = new Point(326, 187);
+            cbMale.Name = "cbMale";
+            cbMale.Size = new Size(88, 33);
+            cbMale.TabIndex = 28;
+            cbMale.Text = "Male";
+            cbMale.UseVisualStyleBackColor = true;
             // 
             // txtStaffAddress
             // 
@@ -188,15 +186,15 @@
             label3.TabIndex = 30;
             label3.Text = "Position";
             // 
-            // txtStaffPhone
+            // txtStaffTel
             // 
-            txtStaffPhone.BorderStyle = BorderStyle.FixedSingle;
-            txtStaffPhone.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtStaffPhone.Location = new Point(921, 199);
-            txtStaffPhone.Multiline = true;
-            txtStaffPhone.Name = "txtStaffPhone";
-            txtStaffPhone.Size = new Size(250, 34);
-            txtStaffPhone.TabIndex = 35;
+            txtStaffTel.BorderStyle = BorderStyle.FixedSingle;
+            txtStaffTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtStaffTel.Location = new Point(921, 199);
+            txtStaffTel.Multiline = true;
+            txtStaffTel.Name = "txtStaffTel";
+            txtStaffTel.Size = new Size(250, 34);
+            txtStaffTel.TabIndex = 35;
             // 
             // label6
             // 
@@ -204,18 +202,18 @@
             label6.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
             label6.Location = new Point(747, 199);
             label6.Name = "label6";
-            label6.Size = new Size(83, 29);
+            label6.Size = new Size(49, 29);
             label6.TabIndex = 34;
-            label6.Text = "Phone";
+            label6.Text = "Tel";
             // 
-            // rbStoppedWork
+            // cbStoppedWork
             // 
-            rbStoppedWork.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            rbStoppedWork.Location = new Point(921, 314);
-            rbStoppedWork.Name = "rbStoppedWork";
-            rbStoppedWork.Size = new Size(18, 17);
-            rbStoppedWork.TabIndex = 37;
-            rbStoppedWork.UseVisualStyleBackColor = false;
+            cbStoppedWork.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cbStoppedWork.Location = new Point(921, 314);
+            cbStoppedWork.Name = "cbStoppedWork";
+            cbStoppedWork.Size = new Size(18, 17);
+            cbStoppedWork.TabIndex = 37;
+            cbStoppedWork.UseVisualStyleBackColor = false;
             // 
             // label5
             // 
@@ -227,15 +225,17 @@
             label5.TabIndex = 36;
             label5.Text = "Stopped Work";
             // 
-            // pbPhoto
+            // pbStaffPhoto
             // 
-            pbPhoto.BorderStyle = BorderStyle.FixedSingle;
-            pbPhoto.Location = new Point(1238, 187);
-            pbPhoto.Name = "pbPhoto";
-            pbPhoto.Size = new Size(270, 312);
-            pbPhoto.SizeMode = PictureBoxSizeMode.CenterImage;
-            pbPhoto.TabIndex = 38;
-            pbPhoto.TabStop = false;
+            pbStaffPhoto.BorderStyle = BorderStyle.FixedSingle;
+            pbStaffPhoto.Image = Properties.Resources.Screenshot__116_;
+            pbStaffPhoto.Location = new Point(1236, 136);
+            pbStaffPhoto.Name = "pbStaffPhoto";
+            pbStaffPhoto.Size = new Size(270, 310);
+            pbStaffPhoto.SizeMode = PictureBoxSizeMode.Zoom;
+            pbStaffPhoto.TabIndex = 38;
+            pbStaffPhoto.TabStop = false;
+            pbStaffPhoto.Click += pbStaffPhoto_Click;
             // 
             // label14
             // 
@@ -256,6 +256,7 @@
             btnNew.TabIndex = 44;
             btnNew.Text = "NEW";
             btnNew.UseVisualStyleBackColor = false;
+            btnNew.Click += btnNew_Click;
             // 
             // btnUpdate
             // 
@@ -266,16 +267,18 @@
             btnUpdate.TabIndex = 43;
             btnUpdate.Text = "UPDATE";
             btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += btnUpdate_Click;
             // 
-            // btnSearch
+            // btnAdd
             // 
-            btnSearch.BackColor = SystemColors.ActiveCaption;
-            btnSearch.Location = new Point(576, 896);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(152, 51);
-            btnSearch.TabIndex = 42;
-            btnSearch.Text = "SEARCH";
-            btnSearch.UseVisualStyleBackColor = false;
+            btnAdd.BackColor = SystemColors.ActiveCaption;
+            btnAdd.Location = new Point(576, 896);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(152, 51);
+            btnAdd.TabIndex = 42;
+            btnAdd.Text = "ADD";
+            btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click;
             // 
             // btnSave
             // 
@@ -286,6 +289,7 @@
             btnSave.TabIndex = 41;
             btnSave.Text = "SAVE";
             btnSave.UseVisualStyleBackColor = false;
+            btnSave.Click += btnSave_Click;
             // 
             // txtSearch
             // 
@@ -300,7 +304,7 @@
             // dtpBirthDate
             // 
             dtpBirthDate.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            dtpBirthDate.Location = new Point(326, 412);
+            dtpBirthDate.Location = new Point(326, 357);
             dtpBirthDate.Margin = new Padding(5);
             dtpBirthDate.Name = "dtpBirthDate";
             dtpBirthDate.Size = new Size(411, 34);
@@ -326,21 +330,21 @@
             label2.TabIndex = 48;
             label2.Text = "Salary";
             // 
-            // rbFemale
+            // cbFemale
             // 
-            rbFemale.AutoSize = true;
-            rbFemale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            rbFemale.Location = new Point(459, 187);
-            rbFemale.Name = "rbFemale";
-            rbFemale.Size = new Size(117, 33);
-            rbFemale.TabIndex = 51;
-            rbFemale.Text = "Female";
-            rbFemale.UseVisualStyleBackColor = true;
+            cbFemale.AutoSize = true;
+            cbFemale.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cbFemale.Location = new Point(459, 187);
+            cbFemale.Name = "cbFemale";
+            cbFemale.Size = new Size(117, 33);
+            cbFemale.TabIndex = 51;
+            cbFemale.Text = "Female";
+            cbFemale.UseVisualStyleBackColor = true;
             // 
             // dtpHiredDate
             // 
             dtpHiredDate.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            dtpHiredDate.Location = new Point(326, 353);
+            dtpHiredDate.Location = new Point(326, 412);
             dtpHiredDate.Margin = new Padding(5);
             dtpHiredDate.Name = "dtpHiredDate";
             dtpHiredDate.Size = new Size(411, 34);
@@ -350,64 +354,51 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.Location = new Point(190, 358);
+            label4.Location = new Point(190, 417);
             label4.Name = "label4";
             label4.Size = new Size(128, 29);
             label4.TabIndex = 52;
             label4.Text = "Hired Date";
             // 
-            // btnBrowsePhoto
+            // gridStaff
             // 
-            btnBrowsePhoto.BackColor = SystemColors.ActiveCaption;
-            btnBrowsePhoto.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnBrowsePhoto.Image = (Image)resources.GetObject("btnBrowsePhoto.Image");
-            btnBrowsePhoto.ImageAlign = ContentAlignment.MiddleLeft;
-            btnBrowsePhoto.Location = new Point(1238, 117);
-            btnBrowsePhoto.Name = "btnBrowsePhoto";
-            btnBrowsePhoto.Size = new Size(270, 57);
-            btnBrowsePhoto.TabIndex = 54;
-            btnBrowsePhoto.Text = "Photo";
-            btnBrowsePhoto.UseVisualStyleBackColor = false;
-            // 
-            // DataStaff
-            // 
-            DataStaff.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            DataStaff.Location = new Point(190, 570);
-            DataStaff.Name = "DataStaff";
-            DataStaff.RowHeadersWidth = 51;
-            DataStaff.RowTemplate.Height = 29;
-            DataStaff.Size = new Size(1281, 289);
-            DataStaff.TabIndex = 55;
+            gridStaff.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            gridStaff.Location = new Point(190, 570);
+            gridStaff.Name = "gridStaff";
+            gridStaff.RowHeadersWidth = 51;
+            gridStaff.RowTemplate.Height = 29;
+            gridStaff.Size = new Size(1281, 289);
+            gridStaff.TabIndex = 55;
+            gridStaff.CellClick += gridStaff_CellClick;
             // 
             // StaffForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1615, 1017);
-            Controls.Add(DataStaff);
-            Controls.Add(btnBrowsePhoto);
+            Controls.Add(gridStaff);
             Controls.Add(dtpHiredDate);
             Controls.Add(label4);
-            Controls.Add(rbFemale);
+            Controls.Add(cbFemale);
             Controls.Add(txtStaffSalary);
             Controls.Add(label2);
             Controls.Add(dtpBirthDate);
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
-            Controls.Add(btnSearch);
+            Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
-            Controls.Add(pbPhoto);
-            Controls.Add(rbStoppedWork);
+            Controls.Add(pbStaffPhoto);
+            Controls.Add(cbStoppedWork);
             Controls.Add(label5);
-            Controls.Add(txtStaffPhone);
+            Controls.Add(txtStaffTel);
             Controls.Add(label6);
             Controls.Add(txtStaffAddress);
             Controls.Add(Address);
             Controls.Add(txtStaffPosition);
             Controls.Add(label3);
-            Controls.Add(rbMale);
+            Controls.Add(cbMale);
             Controls.Add(label15);
             Controls.Add(label16);
             Controls.Add(txtFullName);
@@ -419,9 +410,9 @@
             Name = "StaffForm";
             Text = "StaffForm";
             WindowState = FormWindowState.Maximized;
-            ((System.ComponentModel.ISupportInitialize)pbPhoto).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pbStaffPhoto).EndInit();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)DataStaff).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridStaff).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -437,30 +428,29 @@
         private TextBox txtID;
         private Label label11;
         private CheckBox checkBox2;
-        private CheckBox rbMale;
+        private CheckBox cbMale;
         private TextBox txtStaffAddress;
         private Label Address;
         private TextBox txtStaffPosition;
         private Label label3;
-        private TextBox txtStaffPhone;
+        private TextBox txtStaffTel;
         private Label label6;
-        private CheckBox rbStoppedWork;
+        private CheckBox cbStoppedWork;
         private Label label5;
-        private PictureBox pbPhoto;
+        private PictureBox pbStaffPhoto;
         private Label label14;
         private Button btnNew;
         private Button btnUpdate;
-        private Button btnSearch;
+        private Button btnAdd;
         private Button btnSave;
         private TextBox txtSearch;
         private DateTimePicker dtpBirthDate;
         private TextBox txtStaffSalary;
         private Label label2;
         private BindingSource bindingSource1;
-        private CheckBox rbFemale;
+        private CheckBox cbFemale;
         private DateTimePicker dtpHiredDate;
         private Label label4;
-        private Button btnBrowsePhoto;
-        private DataGridView DataStaff;
+        private DataGridView gridStaff;
     }
 }
