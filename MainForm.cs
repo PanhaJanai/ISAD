@@ -407,12 +407,12 @@ namespace PABMS
         {
             dashboardForm = new DashboardForm();
             ticketForm = new TicketForm(connection);
-            packageForm = new PackageForm(connection);
+            packageForm = new PackageForm();
             staffForm = new StaffForm();
             customerForm = new CustomerForm();
             userForm = new UserForm();
-            busForm = new BusForm(connection);
-            truckForm = new TruckForm(connection);
+            busForm = new BusForm();
+            truckForm = new TruckForm();
             paymentTicketForm = new PaymentTicketForm();
             paymentPackageForm = new PaymentPackageForm();
 
@@ -477,7 +477,7 @@ namespace PABMS
             FormLogin.User user = formLogin.user;
             labelUsername.Text = $"Login as : {user.username}";
 
-            if (user.position == "Customer Service")
+            if (user.position == "Cashier")
             {
                 HideButtons(btnUser, btnStaff, btnBus, btnTruck);
                 SetRowHeights(0, 0, 0, 0);

@@ -54,7 +54,7 @@ namespace PABMS
             }
             connection.Close();
             txtUsername.Text = "panha";
-            txtPassword.Text = "manager";
+            txtPassword.Text = "cashier";
             btnLogin.PerformClick();
         }
 

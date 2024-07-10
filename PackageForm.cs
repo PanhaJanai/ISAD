@@ -1,191 +1,203 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 using System.Windows.Forms;
 
 namespace PABMS
 {
     public partial class PackageForm : Form
     {
-        SqlDataAdapter adapter = new SqlDataAdapter();
-        DataTable table = new DataTable();
-        SqlConnection connection;
-        public PackageForm(SqlConnection connection)
+        DataTable packageTable = new DataTable();
+        DataTable saveTable = new DataTable();
+        string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
+
+        public PackageForm()
         {
-            this.connection = connection;
-            if (connection.State.Equals(ConnectionState.Closed))
-            {
-                this.connection.Open();
-            }
             InitializeComponent();
-            btnSearch.Click += btnSearch_Click;
-            gridSearch.SelectionChanged += GridSearch_SelectionChanged;
-            showPackages();
+
+            fillPackageTable();
+            txtPackageID.Text = getLatestID().ToString();
+            //packageTable.PrimaryKey = new DataColumn[] { packageTable.Columns["PackageID"] };
+            saveTable = packageTable.Clone();
+            gridPackage.DataSource = packageTable;
+
+            gridPackage.CellClick += gridPackage_CellClick;
+            btnAdd.Click += btnAdd_Click;
+            btnSave.Click += btnSave_Click;
+            btnUpdate.Click += btnUpdate_Click;
+            btnNew.Click += btnNew_Click;
         }
 
-        private void showPackages()
+        void gridPackage_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            string query = @"
-                SELECT 
-                    p.PackageID,
-                    p.PackageName,
-                    p.PackagePrice,
-                    p.DeliveryDate,
-                    p.DepartureDate,
-                    p.ReceiverContactInformation,
-                    p.OriginName,
-                    p.DestinationName,
-                    t.TruckID,
-                    t.TruckNumber,
-                    t.DriverName,
-                    t.DriverTel
-                FROM tbPackage p
-                JOIN tbTruck t ON p.TruckID = t.TruckID
-                ";
-
-            using (SqlCommand command = new SqlCommand(query, connection))
-            {
-                SqlDataAdapter adapter = new SqlDataAdapter(command);
-                table = new DataTable();
-                adapter.Fill(table);
-                gridSearch.DataSource = table;
-            }
-        }
-
-        private void SearchPackages(int packageId)
-        {
-            string query = @"
-                SELECT 
-                    p.PackageID,
-                    p.PackageName,
-                    p.PackagePrice,
-                    p.DeliveryDate,
-                    p.DepartureDate,
-                    p.ReceiverContactInformation,
-                    p.OriginName,
-                    p.DestinationName,
-                    t.TruckID,
-                    t.TruckNumber,
-                    t.DriverName,
-                    t.DriverTel
-                FROM tbPackage p
-                JOIN tbTruck t ON p.TruckID = t.TruckID
-                WHERE p.PackageID = @PackageID;";
-
-            using (SqlCommand command = new SqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@PackageID", packageId);
-                SqlDataAdapter adapter = new SqlDataAdapter(command);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                gridSearch.DataSource = dt;
-            }
-        }
-
-        private void GridSearch_SelectionChanged(object sender, EventArgs e)
-        {
-            DataGridViewRow row = gridSearch.CurrentRow;
+            DataGridViewRow row = gridPackage.CurrentRow;
             if (row != null)
             {
-                DisplaySelectedRowData(row);
+                txtPackageID.Text = row.Cells["PackageID"].Value.ToString();
+                txtPackageName.Text = row.Cells["PackageName"].Value.ToString();
+                txtPackagePrice.Text = row.Cells["PackagePrice"].Value.ToString();
+                dtpDeliveryDate.Value = Convert.ToDateTime(row.Cells["DeliveryDate"].Value);
+                dtpDepartureDate.Value = Convert.ToDateTime(row.Cells["DepartureDate"].Value);
+                txtReceiverContact.Text = row.Cells["ReceiverContactInformation"].Value.ToString();
+                txtOrigin.Text = row.Cells["OriginName"].Value.ToString();
+                txtDestination.Text = row.Cells["DestinationName"].Value.ToString();
+                txtTruckID.Text = row.Cells["TruckID"].Value.ToString();
+                cmbTruckNumber.Text = row.Cells["DriverNumber"].Value.ToString();
             }
         }
 
-        private void DisplaySelectedRowData(DataGridViewRow row)
+        void btnAdd_Click(object sender, EventArgs e)
         {
-            txtPackageID.Text = row.Cells["PackageID"].Value.ToString();
-            txtPackageName.Text = row.Cells["PackageName"].Value.ToString();
-            txtPackagePrice.Text = row.Cells["PackagePrice"].Value.ToString();
-            txtReciverContact.Text = row.Cells["ReceiverContactInformation"].Value.ToString();
-            txtOrigin.Text = row.Cells["OriginName"].Value.ToString();
-            txtDestination.Text = row.Cells["DestinationName"].Value.ToString();
+            DataRow row = saveTable.NewRow();
 
-            txtTruckID.Text = row.Cells["TruckID"].Value.ToString();
-            txtTruckNo.Text = row.Cells["TruckNumber"].Value.ToString();
-
-            dateDeparture.Value = (DateTime)row.Cells["DepartureDate"].Value;
-            dateDelivery.Value = (DateTime)row.Cells["DeliveryDate"].Value;
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            string insertQuery = @"
-                INSERT INTO tbPackage (PackageName, PackagePrice, DeliveryDate, DepartureDate, ReceiverContactInformation, OriginName, DestinationName, TruckID)
-                VALUES (@PackageName, @PackagePrice, @DeliveryDate, @DepartureDate, @ReceiverContact, @Origin, @Destination, @TruckID)";
-
-            using (SqlCommand command = new SqlCommand(insertQuery, connection))
+            if (!isAllFilled())
             {
-                command.Parameters.AddWithValue("@PackageName", txtPackageName.Text);
-                command.Parameters.AddWithValue("@PackagePrice", decimal.Parse(txtPackagePrice.Text));
-                command.Parameters.AddWithValue("@DeliveryDate", DateTime.Parse(dateDelivery.Value.ToString()));
-                command.Parameters.AddWithValue("@DepartureDate", DateTime.Parse(dateDeparture.Value.ToString()));
-                command.Parameters.AddWithValue("@ReceiverContact", txtReciverContact.Text);
-                command.Parameters.AddWithValue("@Origin", txtOrigin.Text);
-                command.Parameters.AddWithValue("@Destination", txtDestination.Text);
-                command.Parameters.AddWithValue("@TruckID", int.Parse(txtTruckID.Text));
-
-                int result = command.ExecuteNonQuery();
-                if (result > 0)
-                    MessageBox.Show("Data inserted successfully.");
-                else
-                    MessageBox.Show("Data insertion failed.");
+                MessageBox.Show("Please fill all fields", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            row["PackageName"] = txtPackageName.Text;
+            row["PackagePrice"] = txtPackagePrice.Text;
+            row["DeliveryDate"] = dtpDeliveryDate.Value;
+            row["DepartureDate"] = dtpDepartureDate.Value;
+            row["ReceiverContactInformation"] = txtReceiverContact.Text;
+            row["OriginName"] = txtOrigin.Text;
+            row["DestinationName"] = txtDestination.Text;
+            row["TruckID"] = txtTruckID.Text;
+            row["DriverNumber"] = cmbTruckNumber.Text ;
+
+            saveTable.Rows.Add(row);
+            MessageBox.Show("Package added to save list", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        void btnSave_Click(object sender, EventArgs e)
         {
-            if (int.TryParse(txtSearch.Text, out int packageId))
+            SavingDialogue dialog = new SavingDialogue(saveTable);
+            dialog.ShowDialog();
+            saveTable = dialog.save_table;
+
+            try
             {
-                SearchPackages(packageId);
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    foreach (DataRow row in saveTable.Rows)
+                    {
+                        SqlCommand command = new SqlCommand("INSERT INTO tbPackage (PackageName, PackagePrice, DeliveryDate, DepartureDate, ReceiverContactInformation, OriginName, DestinationName, TruckID, DriverNumber) VALUES (@PackageName, @PackagePrice, @DeliveryDate, @DepartureDate, @ReceiverContactInformation, @OriginName, @DestinationName, @TruckID, @DriverNumber)", connection);
+                        command.Parameters.AddWithValue("@PackageName", row["PackageName"]);
+                        command.Parameters.AddWithValue("@PackagePrice", row["PackagePrice"]);
+                        command.Parameters.AddWithValue("@DeliveryDate", row["DeliveryDate"]);
+                        command.Parameters.AddWithValue("@DepartureDate", row["DepartureDate"]);
+                        command.Parameters.AddWithValue("@ReceiverContactInformation", row["ReceiverContactInformation"]);
+                        command.Parameters.AddWithValue("@OriginName", row["OriginName"]);
+                        command.Parameters.AddWithValue("@DestinationName", row["DestinationName"]);
+                        command.Parameters.AddWithValue("@TruckID", row["TruckID"]);
+                        command.Parameters.AddWithValue("@DriverNumber", row["DriverNumber"]);
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                    MessageBox.Show("Package saved successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please enter a valid Package ID.");
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            saveTable.Clear();
+            refreshGridPackage();
         }
 
-        private void btnUpdate_Click(object sender, EventArgs e)
+        void btnNew_Click(object sender, EventArgs e)
         {
-            string updateQuery = @"
-                UPDATE tbPackage
-                SET PackageName = @PackageName, PackagePrice = @PackagePrice, DeliveryDate = @DeliveryDate, DepartureDate = @DepartureDate, ReceiverContactInformation = @ReceiverContact, OriginName = @Origin, DestinationName = @Destination, TruckID = @TruckID
-                WHERE PackageID = @PackageID";
-
-            using (SqlCommand command = new SqlCommand(updateQuery, connection))
-            {
-                command.Parameters.AddWithValue("@PackageName", txtPackageName.Text);
-                command.Parameters.AddWithValue("@PackagePrice", decimal.Parse(txtPackagePrice.Text));
-                command.Parameters.AddWithValue("@DeliveryDate", DateTime.Parse(dateDelivery.Value.ToString()));
-                command.Parameters.AddWithValue("@DepartureDate", DateTime.Parse(dateDeparture.Value.ToString()));
-                command.Parameters.AddWithValue("@ReceiverContact", txtReciverContact.Text);
-                command.Parameters.AddWithValue("@Origin", txtOrigin.Text);
-                command.Parameters.AddWithValue("@Destination", txtDestination.Text);
-                command.Parameters.AddWithValue("@TruckID", int.Parse(txtTruckID.Text));
-                command.Parameters.AddWithValue("@PackageID", int.Parse(txtPackageID.Text));
-
-                int result = command.ExecuteNonQuery();
-
-                if (result > 0)
-                    MessageBox.Show("Data updated successfully.");
-                else
-                    MessageBox.Show("Data update failed.");
-                
-                showPackages();
-            }
-        }
-
-        private void btnNew_Click(object sender, EventArgs e)
-        {
-            txtPackageID.Text = "";
+            txtPackageID.Text = getLatestID().ToString();
             txtPackageName.Text = "";
             txtPackagePrice.Text = "";
-            txtReciverContact.Text = "";
+            dtpDeliveryDate.Value = DateTime.Now;
+            dtpDepartureDate.Value = DateTime.Now;
+            txtReceiverContact.Text = "";
             txtOrigin.Text = "";
             txtDestination.Text = "";
             txtTruckID.Text = "";
-            txtTruckNo.Text = "";
-            dateDeparture.Value = DateTime.Now;
-            dateDelivery.Value = DateTime.Now;
+            cmbTruckNumber.Text = "";
+            refreshGridPackage();
+        }
+
+        void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (txtPackageID.Text == "")
+            {
+                MessageBox.Show("Please select a package to update", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("UPDATE tbPackage SET PackageName = @PackageName, PackagePrice = @PackagePrice, DeliveryDate = @DeliveryDate, DepartureDate = @DepartureDate, ReceiverContactInformation = @ReceiverContactInformation, OriginName = @OriginName, DestinationName = @DestinationName, TruckID = @TruckID, DriverNumber = @DriverNumber WHERE PackageID = @PackageID", connection);
+                    command.Parameters.AddWithValue("@PackageName", txtPackageName.Text);
+                    command.Parameters.AddWithValue("@PackagePrice", txtPackagePrice.Text);
+                    command.Parameters.AddWithValue("@DeliveryDate", dtpDeliveryDate.Value);
+                    command.Parameters.AddWithValue("@DepartureDate", dtpDepartureDate.Value);
+                    command.Parameters.AddWithValue("@ReceiverContactInformation", txtReceiverContact.Text);
+                    command.Parameters.AddWithValue("@OriginName", txtOrigin.Text);
+                    command.Parameters.AddWithValue("@DestinationName", txtDestination.Text);
+                    command.Parameters.AddWithValue("@TruckID", txtTruckID.Text);
+                    command.Parameters.AddWithValue("@DriverNumber", cmbTruckNumber.Text );
+                    command.Parameters.AddWithValue("@PackageID", txtPackageID.Text);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                    MessageBox.Show("Package updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    refreshGridPackage();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void fillPackageTable()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand("SELECT * FROM tbPackage", connection);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(packageTable);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        int getLatestID()
+        {
+            int max = 0;
+            if (packageTable.Rows.Count > 0)
+            {
+                DataRow row = packageTable.Rows[packageTable.Rows.Count - 1];
+                max = Convert.ToInt32(row["PackageID"]);
+            }
+            return max + 1;
+        }
+
+        void refreshGridPackage()
+        {
+            fillPackageTable();
+            gridPackage.DataSource = packageTable;
+        }
+
+        bool isAllFilled()
+        {
+            return !string.IsNullOrEmpty(txtPackageName.Text) && !string.IsNullOrEmpty(txtPackagePrice.Text) && !string.IsNullOrEmpty(txtReceiverContact.Text) && !string.IsNullOrEmpty(txtOrigin.Text) && !string.IsNullOrEmpty(txtDestination.Text) && !string.IsNullOrEmpty(txtTruckID.Text) && !string.IsNullOrEmpty(cmbTruckNumber.Text );
         }
     }
 }

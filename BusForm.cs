@@ -2,352 +2,183 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Configuration;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace PABMS
 {
     public partial class BusForm : Form
     {
-        private string connectionString;
-        private SqlDataAdapter dataAdapter;
-        private DataTable dataTable;
+        // tbBus Schema 
+        //  BusID INT PRIMARY KEY IDENTITY(1,1),
+        //  BusNumber NVARCHAR(10),
+        //  BusTypeID INT REFERENCES tbBusType(BusTypeID) ON DELETE CASCADE ON UPDATE CASCADE,
+        //  BusTypeName NVARCHAR(50),
+        //  TicketPrice MONEY,
+        //  DriverID INT REFERENCES tbDriver(DriverID) ON DELETE CASCADE ON UPDATE CASCADE,
+        //  DriverName NVARCHAR(50),
+        //  DriverTel NVARCHAR(20)
 
-        public BusForm(SqlConnection connection)
+        string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
+        private SqlDataAdapter dataAdapter;
+        private DataTable busTable;
+        DataTable saveTable;
+
+        public BusForm()
         {
             InitializeComponent();
-            connectionString = connection.ConnectionString;
-        }
 
-        private void FillComboSearchDriverID()
-        {
-            cmDriver.Items.Clear();
+            fillBusTable();
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT DriverID FROM tbDriver", conn);
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        cmDriver.Items.Add(reader["DriverID"].ToString());
-                    }
-                    reader.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while filling driver combo box: " + ex.Message);
-                }
-            }
-        }
-
-
-
-        private void BusForm_Load(object sender, EventArgs e)
-        {
-            FillComboSearchDriverID();
-            LoadLatestBusID();
-            LoadBusData();
-            DataBus.CellClick += DataBus_CellClick;
-        }
-
-        private void cmDriver_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmDriver.SelectedItem != null)
-            {
-                int selectedCusID = Convert.ToInt32(cmDriver.SelectedItem.ToString());
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    try
-                    {
-                        conn.Open();
-                        SqlCommand cmd = new SqlCommand("SELECT FullName, PhoneNumber FROM tbDriver WHERE DriverID = @DriverID", conn);
-                        cmd.Parameters.AddWithValue("@DriverID", selectedCusID);
-
-                        SqlDataReader reader = cmd.ExecuteReader();
-                        if (reader.Read())
-                        {
-                            txtFullName.Text = reader["FullName"].ToString();
-                            txtPhone.Text = reader["PhoneNumber"].ToString();
-                        }
-                        reader.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred while retrieving Driver details: " + ex.Message);
-                    }
-                }
-            }
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            if (cmDriver.SelectedItem == null)
-            {
-                MessageBox.Show("Please select a driver.");
-                return;
-            }
-
-            int driverId = Convert.ToInt32(cmDriver.SelectedItem.ToString());
-            string busNo = txtBusNo.Text.Trim();
-            double price;
-
-            if (!double.TryParse(txtPrice.Text.Trim(), out price))
-            {
-                MessageBox.Show("Please enter a valid ticket price.");
-                return;
-            }
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    string query = "INSERT INTO tbBus (BusNumber, TicketPrice, DriverID) " +
-                                   "VALUES (@BusNumber, @TicketPrice, @DriverID)";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@BusNumber", busNo);
-                        cmd.Parameters.AddWithValue("@TicketPrice", price);
-                        cmd.Parameters.AddWithValue("@DriverID", driverId);
-
-                        cmd.ExecuteNonQuery();
-                    }
-                    MessageBox.Show("Bus added successfully.");
-                    LoadLatestBusID();
-                    LoadBusData();
-                    ClearForm();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while saving the bus: " + ex.Message);
-                }
-            }
-        }
-        private void LoadLatestBusID()
-        {
-            int latestTicketID = GetLatestBusID();
-            txtBusID.Text = (latestTicketID + 1).ToString();
-        }
-
-        private int GetLatestBusID()
-        {
-            int latestbusID = 1;
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    string query = "SELECT ISNULL(MAX(BusID), 0) FROM tbBus";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        object result = cmd.ExecuteScalar();
-                        if (result != DBNull.Value)
-                        {
-                            latestbusID = Convert.ToInt32(result);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while fetching latest Bus ID: " + ex.Message);
-                }
-            }
-
-            return latestbusID;
-        }
-
-        private void LoadBusData()
-        {
-            dataTable = new DataTable();
-            dataAdapter = new SqlDataAdapter();
-
-            string query = "SELECT BusID, BusNumber, TicketPrice, DriverID FROM tbBus";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    dataAdapter.SelectCommand = new SqlCommand(query, conn);
-                    dataAdapter.Fill(dataTable);
-
-                    // Bind data to DataGridView
-                    DataBus.DataSource = dataTable;
-
-                    // Optionally, set DataGridView column headers if not automatically set
-                    DataBus.Columns["BusID"].HeaderText = "Bus ID";
-                    DataBus.Columns["BusNumber"].HeaderText = "Bus Numer";
-                    DataBus.Columns["TicketPrice"].HeaderText = "Ticket Price";
-                    DataBus.Columns["DriverID"].HeaderText = "Driver ID";
-
-                    DataBus.Columns["BusID"].Width = 170; // Adjust the width as needed
-                    DataBus.Columns["BusNumber"].Width = 250; // Adjust the width as needed
-                    DataBus.Columns["TicketPrice"].Width = 250;
-                    DataBus.Columns["DriverID"].Width = 250;
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while loading bus data: " + ex.Message);
-                }
-            }
-        }
-        private void DataBus_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow row = DataBus.Rows[e.RowIndex];
-                if (row != null)
-                {
-                    txtBusID.Text = row.Cells["BusID"].Value.ToString(); // Assuming BusID is stored in the TicketID field of DataTicket
-                    txtBusNo.Text = row.Cells["BusNumber"].Value.ToString(); // Replace with correct column name
-                    txtPrice.Text = row.Cells["TicketPrice"].Value.ToString(); // Replace with correct column name
-                    cmDriver.Text = row.Cells["DriverID"].Value.ToString(); // Replace with correct column name
-                }
-            }
+            saveTable = busTable.Clone();
+            txtBusID.Text = getLatestBusID().ToString();
+            gridBus.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-
-            int searchID;
-            if (!int.TryParse(txtSearch.Text.Trim(), out searchID))
+            // search for bus by busID using busTable and highlight the row
+            foreach (DataGridViewRow row in gridBus.Rows)
             {
-                MessageBox.Show("Please enter a valid Bus ID for searching.");
-                return;
-            }
-
-            string query = "SELECT BusID, BusNumber, TicketPrice, DriverID " +
-                           "FROM tbBus WHERE BusID = @BusID";
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
+                if (row.Cells[0].Value.ToString().Equals(txtSearch.Text))
                 {
-                    conn.Open();
-                    dataAdapter.SelectCommand = new SqlCommand(query, conn);
-                    dataAdapter.SelectCommand.Parameters.AddWithValue("@BusID", searchID);
-                    dataTable.Clear(); // Clear previous data
-                    dataAdapter.Fill(dataTable);
-
-                    // Bind data to DataGridView
-                    DataBus.DataSource = dataTable;
-
-                    // Optionally, set DataGridView column headers if not automatically set
-                    DataBus.Columns["BusID"].HeaderText = "Bus ID";
-                    DataBus.Columns["BusNumber"].HeaderText = "Bus Number";
-                    DataBus.Columns["TicketPrice"].HeaderText = "Ticket Price";
-                    DataBus.Columns["DriverID"].HeaderText = "Driver ID";
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while searching for the bus: " + ex.Message);
+                    row.Selected = true;
+                    gridBus.CurrentCell = row.Cells[0];
+                    break;
                 }
             }
         }
-
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtBusID.Text.Trim()))
+            try
             {
-                MessageBox.Show("Please select a bus to update.");
-                return;
-            }
-
-            int busID = Convert.ToInt32(txtBusID.Text.Trim());
-            string busNumber = txtBusNo.Text.Trim();
-            decimal ticketPrice;
-
-            if (!decimal.TryParse(txtPrice.Text.Trim(), out ticketPrice))
-            {
-                MessageBox.Show("Please enter a valid ticket price.");
-                return;
-            }
-
-            int driverID = Convert.ToInt32(cmDriver.SelectedItem?.ToString());
-
-            if (driverID == 0)
-            {
-                MessageBox.Show("Please select a valid driver.");
-                return;
-            }
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
+                using (SqlConnection con = new SqlConnection(connectionString))
                 {
-                    conn.Open();
-                    string query = "UPDATE tbBus SET BusNumber = @BusNumber, TicketPrice = @TicketPrice, DriverID = @DriverID " +
-                                   "WHERE BusID = @BusID";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@BusID", busID);
-                        cmd.Parameters.AddWithValue("@BusNumber", busNumber);
-                        cmd.Parameters.AddWithValue("@TicketPrice", ticketPrice);
-                        cmd.Parameters.AddWithValue("@DriverID", driverID);
-
-                        cmd.ExecuteNonQuery();
-                    }
-                    MessageBox.Show("Bus updated successfully.");
-                    LoadLatestBusID();
-                    LoadBusData();
-                    ClearForm();
-
-
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("UPDATE tbBus SET BusNumber = @BusNumber, BusTypeID = @BusTypeID, BusTypeName = @BusTypeName, TicketPrice = @TicketPrice, DriverID = @DriverID, DriverName = @DriverName, DriverTel = @DriverTel WHERE BusID = @BusID", con);
+                    cmd.Parameters.AddWithValue("@BusID", txtBusID.Text);
+                    cmd.Parameters.AddWithValue("@BusNumber", txtBusNo.Text);
+                    cmd.Parameters.AddWithValue("@BusTypeID", txtBusTypeID.Text);
+                    cmd.Parameters.AddWithValue("@BusTypeName", cmbBusTypeName.Text);
+                    cmd.Parameters.AddWithValue("@TicketPrice", txtTicketPrice.Text);
+                    cmd.Parameters.AddWithValue("@DriverID", txtDriverID.Text);
+                    cmd.Parameters.AddWithValue("@DriverName", txtDriverName.Text);
+                    cmd.Parameters.AddWithValue("@DriverTel", cmbDriverTel.Text);
+                    cmd.ExecuteNonQuery();
+                    con.Close();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while updating the bus: " + ex.Message);
-                }
+            }
+            catch
+            {
+                MessageBox.Show("Error updating data");
             }
         }
-        private void ClearForm()
+
+        private void cmbDriverTel_SelectedIndexChanged(object sender, EventArgs e)
         {
+            DataGridViewRow row = gridBus.CurrentRow;
+            txtBusID.Text = row.Cells[0].Value.ToString();
+            txtBusNo.Text = row.Cells[1].Value.ToString();
+            txtBusTypeID.Text = row.Cells[2].Value.ToString();
+            cmbBusTypeName.Text = row.Cells[3].Value.ToString();
+            txtTicketPrice.Text = row.Cells[4].Value.ToString();
+            txtDriverID.Text = row.Cells[5].Value.ToString();
+            txtDriverName.Text = row.Cells[6].Value.ToString();
+            cmbDriverTel.Text = row.Cells[7].Value.ToString();
 
-            txtBusNo.Clear();
-            txtPrice.Clear();
-            txtFullName.Clear();
-            txtPhone.Clear();
-            txtSearch.Clear();
-            txtBusNo.Clear();
-            cmDriver.SelectedIndex = -1;
+        }
 
-            // Optionally, you can also clear any other fields related to tbBus
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            // create a new row in busTable and add the data
+            DataRow row = saveTable.NewRow();
+            row["BusID"] = txtBusID.Text;
+            row["BusNumber"] = txtBusNo.Text;
+            row["BusTypeID"] = txtBusTypeID.Text;
+            row["BusTypeName"] = cmbBusTypeName.Text;
+            row["TicketPrice"] = txtTicketPrice.Text;
+            row["DriverID"] = txtDriverID.Text;
+            row["DriverName"] = txtDriverName.Text;
+            row["DriverTel"] = cmbDriverTel.Text;
+            saveTable.Rows.Add(row);
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SavingDialogue savingDialogue = new SavingDialogue(saveTable);
+            savingDialogue.ShowDialog();
+            saveTable = savingDialogue.save_table;
+            busTable.Merge(saveTable);
+            gridBus.Refresh();
+            try
+            {
+                foreach (DataRow row in saveTable.Rows)
+                {
+                    // insert into db
+                    using (SqlConnection con = new SqlConnection(connectionString))
+                    {
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand("INSERT INTO tbBus(BusNumber, BusTypeID, BusTypeName, TicketPrice, DriverID, DriverName, DriverTel) VALUES(@BusNumber, @BusTypeID, @BusTypeName, @TicketPrice, @DriverID, @DriverName, @DriverTel)", con);
+                        cmd.Parameters.AddWithValue("@BusNumber", row["BusNumber"]);
+                        cmd.Parameters.AddWithValue("@BusTypeID", row["BusTypeID"]);
+                        cmd.Parameters.AddWithValue("@BusTypeName", row["BusTypeName"]);
+                        cmd.Parameters.AddWithValue("@TicketPrice", row["TicketPrice"]);
+                        cmd.Parameters.AddWithValue("@DriverID", row["DriverID"]);
+                        cmd.Parameters.AddWithValue("@DriverName", row["DriverName"]);
+                        cmd.Parameters.AddWithValue("@DriverTel", row["DriverTel"]);
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error saving data");
+            }
+
+            saveTable.Clear();
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            ClearForm();
-            LoadLatestBusID();
-            LoadBusData();
+            txtBusID.Text = getLatestBusID().ToString();
+            txtBusNo.Text = "";
+            txtBusTypeID.Text = "";
+            cmbBusTypeName.Text = "";
+            txtTicketPrice.Text = "";
+            txtDriverID.Text = "";
+            txtDriverName.Text = "";
+            cmbDriverTel.Text = "";
         }
 
-        private void DataBus_CellClick_1(object sender, DataGridViewCellEventArgs e)
+        private void gridBus_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            DataGridViewRow row = gridBus.CurrentRow;
+            txtBusID.Text = row.Cells[0].Value.ToString();
+            txtBusNo.Text = row.Cells[1].Value.ToString();
+            txtBusTypeID.Text = row.Cells[2].Value.ToString();
+            cmbBusTypeName.Text = row.Cells[3].Value.ToString();
+            txtTicketPrice.Text = row.Cells[4].Value.ToString();
+            txtDriverID.Text = row.Cells[5].Value.ToString();
+            txtDriverName.Text = row.Cells[6].Value.ToString();
+            cmbDriverTel.Text = row.Cells[7].Value.ToString();
+        }
+
+        int getLatestBusID()
+        {
+            return busTable.Rows[busTable.Rows.Count - 1].Field<int>("BusID") + 1;
+        }
+
+        void fillBusTable()
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
             {
-                DataGridViewRow row = DataBus.Rows[e.RowIndex];
-                if (row != null)
-                {
-                    txtBusID.Text = row.Cells["BusID"].Value.ToString(); // Assuming BusID is stored in the TicketID field of DataTicket
-                    txtBusNo.Text = row.Cells["BusNumber"].Value.ToString(); // Replace with correct column name
-                    txtPrice.Text = row.Cells["TicketPrice"].Value.ToString(); // Replace with correct column name
-                    cmDriver.Text = row.Cells["DriverID"].Value.ToString(); // Replace with correct column name
-                }
+                con.Open();
+                dataAdapter = new SqlDataAdapter("SELECT * FROM tbBus", con);
+                busTable = new DataTable();
+                dataAdapter.Fill(busTable);
+                gridBus.DataSource = busTable;
             }
         }
     }

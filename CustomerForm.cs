@@ -46,6 +46,7 @@ namespace PABMS
             fillGridWithNewData();
             txtCusID.Text = (tableCustomer.Rows.Count + 1).ToString();
             tableSave = tableCustomer.Clone();
+            gridCustomer.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

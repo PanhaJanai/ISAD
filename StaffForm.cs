@@ -264,7 +264,8 @@ namespace PABMS
                     con.Close();
                     staffTable.AcceptChanges();
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("An error occurred: " + ex.Message);
             }
@@ -292,6 +293,11 @@ namespace PABMS
             cbMale.Checked = false;
             cbFemale.Checked = false;
             dtpBirthDate.Value = DateTime.Now;
+        }
+
+        private void StaffForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

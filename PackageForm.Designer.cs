@@ -31,9 +31,9 @@
             label14 = new Label();
             btnNew = new Button();
             btnUpdate = new Button();
-            btnSearch = new Button();
+            btnAdd = new Button();
             btnSave = new Button();
-            txtReciverContact = new TextBox();
+            txtReceiverContact = new TextBox();
             label15 = new Label();
             txtPackagePrice = new TextBox();
             label16 = new Label();
@@ -42,7 +42,6 @@
             label11 = new Label();
             label1 = new Label();
             panel3 = new Panel();
-            txtTruckNo = new TextBox();
             label8 = new Label();
             txtTruckID = new TextBox();
             label9 = new Label();
@@ -52,21 +51,23 @@
             txtDestination = new TextBox();
             label18 = new Label();
             txtSearch = new TextBox();
-            gridSearch = new DataGridView();
-            dateDeparture = new DateTimePicker();
-            dateDelivery = new DateTimePicker();
+            gridPackage = new DataGridView();
+            dtpDepartureDate = new DateTimePicker();
+            dtpDeliveryDate = new DateTimePicker();
             txtPackageName = new TextBox();
             label19 = new Label();
-            button1 = new Button();
+            label2 = new Label();
+            txtPackageValue = new TextBox();
+            cmbTruckNumber = new ComboBox();
             panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)gridSearch).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridPackage).BeginInit();
             SuspendLayout();
             // 
             // label14
             // 
             label14.AutoSize = true;
             label14.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label14.Location = new Point(93, 606);
+            label14.Location = new Point(255, 610);
             label14.Name = "label14";
             label14.Size = new Size(89, 29);
             label14.TabIndex = 46;
@@ -76,61 +77,65 @@
             // 
             btnNew.BackColor = Color.FromArgb(192, 255, 255);
             btnNew.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnNew.Location = new Point(1163, 904);
+            btnNew.Location = new Point(1054, 896);
             btnNew.Name = "btnNew";
             btnNew.Size = new Size(152, 50);
             btnNew.TabIndex = 45;
             btnNew.Text = "NEW";
             btnNew.UseVisualStyleBackColor = false;
+            btnNew.Click += btnNew_Click;
             // 
             // btnUpdate
             // 
             btnUpdate.BackColor = Color.FromArgb(255, 192, 128);
             btnUpdate.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnUpdate.Location = new Point(850, 904);
+            btnUpdate.Location = new Point(802, 896);
             btnUpdate.Name = "btnUpdate";
             btnUpdate.Size = new Size(152, 50);
             btnUpdate.TabIndex = 44;
             btnUpdate.Text = "UPDATE";
             btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += btnUpdate_Click;
             // 
-            // btnSearch
+            // btnAdd
             // 
-            btnSearch.BackColor = SystemColors.ActiveCaption;
-            btnSearch.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSearch.Location = new Point(527, 904);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(152, 50);
-            btnSearch.TabIndex = 43;
-            btnSearch.Text = "SEARCH";
-            btnSearch.UseVisualStyleBackColor = false;
+            btnAdd.BackColor = SystemColors.ActiveCaption;
+            btnAdd.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            btnAdd.Location = new Point(525, 896);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(152, 50);
+            btnAdd.TabIndex = 43;
+            btnAdd.Text = "ADD";
+            btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click;
             // 
             // btnSave
             // 
             btnSave.BackColor = Color.DeepSkyBlue;
             btnSave.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSave.Location = new Point(245, 904);
+            btnSave.Location = new Point(259, 896);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(152, 50);
             btnSave.TabIndex = 42;
             btnSave.Text = "SAVE";
             btnSave.UseVisualStyleBackColor = false;
+            btnSave.Click += btnSave_Click;
             // 
-            // txtReciverContact
+            // txtReceiverContact
             // 
-            txtReciverContact.BorderStyle = BorderStyle.FixedSingle;
-            txtReciverContact.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtReciverContact.Location = new Point(775, 297);
-            txtReciverContact.Multiline = true;
-            txtReciverContact.Name = "txtReciverContact";
-            txtReciverContact.Size = new Size(676, 34);
-            txtReciverContact.TabIndex = 39;
+            txtReceiverContact.BorderStyle = BorderStyle.FixedSingle;
+            txtReceiverContact.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtReceiverContact.Location = new Point(488, 542);
+            txtReceiverContact.Multiline = true;
+            txtReceiverContact.Name = "txtReceiverContact";
+            txtReceiverContact.Size = new Size(718, 34);
+            txtReceiverContact.TabIndex = 39;
             // 
             // label15
             // 
             label15.AutoSize = true;
             label15.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label15.Location = new Point(569, 300);
+            label15.Location = new Point(246, 545);
             label15.Name = "label15";
             label15.Size = new Size(196, 29);
             label15.TabIndex = 38;
@@ -140,7 +145,7 @@
             // 
             txtPackagePrice.BorderStyle = BorderStyle.FixedSingle;
             txtPackagePrice.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPackagePrice.Location = new Point(290, 203);
+            txtPackagePrice.Location = new Point(488, 259);
             txtPackagePrice.Multiline = true;
             txtPackagePrice.Name = "txtPackagePrice";
             txtPackagePrice.Size = new Size(250, 34);
@@ -150,17 +155,17 @@
             // 
             label16.AutoSize = true;
             label16.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label16.Location = new Point(89, 208);
+            label16.Location = new Point(251, 212);
             label16.Name = "label16";
-            label16.Size = new Size(169, 29);
+            label16.Size = new Size(174, 29);
             label16.TabIndex = 36;
-            label16.Text = "Package Price";
+            label16.Text = "Package Value";
             // 
             // label13
             // 
             label13.AutoSize = true;
             label13.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label13.Location = new Point(569, 208);
+            label13.Location = new Point(246, 453);
             label13.Name = "label13";
             label13.Size = new Size(156, 29);
             label13.TabIndex = 34;
@@ -170,7 +175,7 @@
             // 
             txtPackageID.BorderStyle = BorderStyle.FixedSingle;
             txtPackageID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPackageID.Location = new Point(290, 157);
+            txtPackageID.Location = new Point(488, 161);
             txtPackageID.Multiline = true;
             txtPackageID.Name = "txtPackageID";
             txtPackageID.Size = new Size(250, 34);
@@ -180,7 +185,7 @@
             // 
             label11.AutoSize = true;
             label11.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label11.Location = new Point(89, 159);
+            label11.Location = new Point(251, 163);
             label11.Name = "label11";
             label11.Size = new Size(136, 29);
             label11.TabIndex = 30;
@@ -190,7 +195,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(709, 51);
+            label1.Location = new Point(611, 66);
             label1.Name = "label1";
             label1.Size = new Size(241, 36);
             label1.TabIndex = 29;
@@ -199,40 +204,30 @@
             // panel3
             // 
             panel3.BorderStyle = BorderStyle.FixedSingle;
-            panel3.Controls.Add(txtTruckNo);
+            panel3.Controls.Add(cmbTruckNumber);
             panel3.Controls.Add(label8);
             panel3.Controls.Add(txtTruckID);
             panel3.Controls.Add(label9);
-            panel3.Location = new Point(93, 356);
+            panel3.Location = new Point(763, 161);
             panel3.Name = "panel3";
-            panel3.Size = new Size(484, 202);
+            panel3.Size = new Size(443, 227);
             panel3.TabIndex = 27;
-            // 
-            // txtTruckNo
-            // 
-            txtTruckNo.BorderStyle = BorderStyle.FixedSingle;
-            txtTruckNo.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtTruckNo.Location = new Point(196, 63);
-            txtTruckNo.Multiline = true;
-            txtTruckNo.Name = "txtTruckNo";
-            txtTruckNo.Size = new Size(250, 34);
-            txtTruckNo.TabIndex = 11;
             // 
             // label8
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label8.Location = new Point(23, 66);
+            label8.Location = new Point(6, 119);
             label8.Name = "label8";
-            label8.Size = new Size(111, 29);
+            label8.Size = new Size(167, 29);
             label8.TabIndex = 10;
-            label8.Text = "Truck N0";
+            label8.Text = "Truck Number";
             // 
             // txtTruckID
             // 
             txtTruckID.BorderStyle = BorderStyle.FixedSingle;
             txtTruckID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtTruckID.Location = new Point(196, 23);
+            txtTruckID.Location = new Point(178, 76);
             txtTruckID.Multiline = true;
             txtTruckID.Name = "txtTruckID";
             txtTruckID.Size = new Size(250, 34);
@@ -242,7 +237,7 @@
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label9.Location = new Point(23, 28);
+            label9.Location = new Point(6, 81);
             label9.Name = "label9";
             label9.Size = new Size(103, 29);
             label9.TabIndex = 8;
@@ -252,7 +247,7 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label10.Location = new Point(571, 252);
+            label10.Location = new Point(248, 497);
             label10.Name = "label10";
             label10.Size = new Size(176, 29);
             label10.TabIndex = 47;
@@ -262,7 +257,7 @@
             // 
             txtOrigin.BorderStyle = BorderStyle.FixedSingle;
             txtOrigin.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtOrigin.Location = new Point(290, 252);
+            txtOrigin.Location = new Point(488, 309);
             txtOrigin.Multiline = true;
             txtOrigin.Name = "txtOrigin";
             txtOrigin.Size = new Size(250, 34);
@@ -272,7 +267,7 @@
             // 
             label17.AutoSize = true;
             label17.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label17.Location = new Point(89, 254);
+            label17.Location = new Point(251, 311);
             label17.Name = "label17";
             label17.Size = new Size(79, 29);
             label17.TabIndex = 51;
@@ -282,7 +277,7 @@
             // 
             txtDestination.BorderStyle = BorderStyle.FixedSingle;
             txtDestination.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtDestination.Location = new Point(290, 297);
+            txtDestination.Location = new Point(488, 354);
             txtDestination.Multiline = true;
             txtDestination.Name = "txtDestination";
             txtDestination.Size = new Size(250, 34);
@@ -292,7 +287,7 @@
             // 
             label18.AutoSize = true;
             label18.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label18.Location = new Point(89, 297);
+            label18.Location = new Point(251, 354);
             label18.Name = "label18";
             label18.Size = new Size(133, 29);
             label18.TabIndex = 49;
@@ -302,81 +297,99 @@
             // 
             txtSearch.BorderStyle = BorderStyle.FixedSingle;
             txtSearch.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtSearch.Location = new Point(188, 606);
+            txtSearch.Location = new Point(350, 610);
             txtSearch.Multiline = true;
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(478, 34);
+            txtSearch.Size = new Size(388, 34);
             txtSearch.TabIndex = 52;
             // 
-            // gridSearch
+            // gridPackage
             // 
-            gridSearch.AllowUserToAddRows = false;
-            gridSearch.AllowUserToDeleteRows = false;
-            gridSearch.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridSearch.Location = new Point(93, 668);
-            gridSearch.Name = "gridSearch";
-            gridSearch.ReadOnly = true;
-            gridSearch.RowHeadersWidth = 51;
-            gridSearch.RowTemplate.Height = 29;
-            gridSearch.Size = new Size(1270, 188);
-            gridSearch.TabIndex = 53;
+            gridPackage.AllowUserToAddRows = false;
+            gridPackage.AllowUserToDeleteRows = false;
+            gridPackage.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            gridPackage.Location = new Point(255, 672);
+            gridPackage.Name = "gridPackage";
+            gridPackage.ReadOnly = true;
+            gridPackage.RowHeadersWidth = 51;
+            gridPackage.RowTemplate.Height = 29;
+            gridPackage.Size = new Size(951, 188);
+            gridPackage.TabIndex = 53;
+            gridPackage.CellClick += gridPackage_CellClick;
             // 
-            // dateDeparture
+            // dtpDepartureDate
             // 
-            dateDeparture.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            dateDeparture.Location = new Point(775, 247);
-            dateDeparture.Name = "dateDeparture";
-            dateDeparture.Size = new Size(410, 34);
-            dateDeparture.TabIndex = 54;
+            dtpDepartureDate.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            dtpDepartureDate.Location = new Point(488, 492);
+            dtpDepartureDate.Name = "dtpDepartureDate";
+            dtpDepartureDate.Size = new Size(410, 34);
+            dtpDepartureDate.TabIndex = 54;
             // 
-            // dateDelivery
+            // dtpDeliveryDate
             // 
-            dateDelivery.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            dateDelivery.Location = new Point(775, 206);
-            dateDelivery.Name = "dateDelivery";
-            dateDelivery.Size = new Size(410, 34);
-            dateDelivery.TabIndex = 54;
+            dtpDeliveryDate.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            dtpDeliveryDate.Location = new Point(488, 451);
+            dtpDeliveryDate.Name = "dtpDeliveryDate";
+            dtpDeliveryDate.Size = new Size(410, 34);
+            dtpDeliveryDate.TabIndex = 54;
             // 
             // txtPackageName
             // 
             txtPackageName.BorderStyle = BorderStyle.FixedSingle;
             txtPackageName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPackageName.Location = new Point(775, 160);
+            txtPackageName.Location = new Point(488, 405);
             txtPackageName.Multiline = true;
             txtPackageName.Name = "txtPackageName";
-            txtPackageName.Size = new Size(676, 34);
+            txtPackageName.Size = new Size(718, 34);
             txtPackageName.TabIndex = 31;
             // 
             // label19
             // 
             label19.AutoSize = true;
             label19.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label19.Location = new Point(569, 162);
+            label19.Location = new Point(246, 407);
             label19.Name = "label19";
             label19.Size = new Size(178, 29);
             label19.TabIndex = 30;
             label19.Text = "Package Name";
             // 
-            // button1
+            // label2
             // 
-            button1.BackColor = Color.Aqua;
-            button1.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            button1.Location = new Point(1200, 606);
-            button1.Name = "button1";
-            button1.Size = new Size(152, 56);
-            button1.TabIndex = 55;
-            button1.Text = "Print";
-            button1.UseVisualStyleBackColor = false;
+            label2.AutoSize = true;
+            label2.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            label2.Location = new Point(255, 259);
+            label2.Name = "label2";
+            label2.Size = new Size(169, 29);
+            label2.TabIndex = 36;
+            label2.Text = "Package Price";
+            // 
+            // txtPackageValue
+            // 
+            txtPackageValue.BorderStyle = BorderStyle.FixedSingle;
+            txtPackageValue.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtPackageValue.Location = new Point(488, 212);
+            txtPackageValue.Multiline = true;
+            txtPackageValue.Name = "txtPackageValue";
+            txtPackageValue.Size = new Size(250, 34);
+            txtPackageValue.TabIndex = 37;
+            // 
+            // cmbTruckNumber
+            // 
+            cmbTruckNumber.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cmbTruckNumber.FormattingEnabled = true;
+            cmbTruckNumber.Location = new Point(178, 117);
+            cmbTruckNumber.Name = "cmbTruckNumber";
+            cmbTruckNumber.Size = new Size(250, 37);
+            cmbTruckNumber.TabIndex = 11;
             // 
             // PackageForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1510, 972);
-            Controls.Add(button1);
-            Controls.Add(dateDelivery);
-            Controls.Add(dateDeparture);
-            Controls.Add(gridSearch);
+            Controls.Add(dtpDeliveryDate);
+            Controls.Add(dtpDepartureDate);
+            Controls.Add(gridPackage);
             Controls.Add(txtSearch);
             Controls.Add(txtOrigin);
             Controls.Add(label17);
@@ -386,11 +399,13 @@
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
-            Controls.Add(btnSearch);
+            Controls.Add(btnAdd);
             Controls.Add(btnSave);
-            Controls.Add(txtReciverContact);
+            Controls.Add(txtReceiverContact);
             Controls.Add(label15);
+            Controls.Add(txtPackageValue);
             Controls.Add(txtPackagePrice);
+            Controls.Add(label2);
             Controls.Add(label16);
             Controls.Add(label13);
             Controls.Add(txtPackageName);
@@ -404,7 +419,7 @@
             Text = "BagageForm";
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)gridSearch).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridPackage).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -414,7 +429,7 @@
         private Label label14;
         private Button btnNew;
         private Button btnUpdate;
-        private Button btnSearch;
+        private Button btnAdd;
         private Button btnSave;
         private Label label15;
         private Label label16;
@@ -439,16 +454,19 @@
         private TextBox txtPackageID;
         private TextBox txtOrigin;
         private TextBox txtDestination;
-        private TextBox txtReciverContact;
+        private TextBox txtReceiverContact;
         private TextBox txtPackagePrice;
 
         private TextBox txtSearch;
-        private DataGridView gridSearch;
-        private DateTimePicker dateDeparture;
+        private DataGridView gridPackage;
+        private DateTimePicker dtpDepartureDate;
         private DateTimePicker datePurchase;
-        private DateTimePicker dateDelivery;
+        private DateTimePicker dtpDeliveryDate;
         private TextBox txtPackageName;
         private Label label19;
         private Button button1;
+        private Label label2;
+        private TextBox txtPackageValue;
+        private ComboBox cmbTruckNumber;
     }
 }
