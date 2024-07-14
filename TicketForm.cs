@@ -20,11 +20,15 @@ namespace PABMS
         DataTable saveTable = new DataTable();
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
 
+        int offset = 0;
+
         public TicketForm(SqlConnection connection)
         {
             InitializeComponent();
 
-            fillTicketTable();
+            //fillTicketTable();
+            //addNext10RowsToTicketTale();
+            addFirst10RowsToTicketTale();
             fillBusTable();
             fillcmbBusNumber();
 
@@ -238,27 +242,29 @@ namespace PABMS
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            int primaryID = int.Parse(txtSearch.Text);
-            DataRow row = ticketTable.Rows.Find(primaryID);
-            if (row != null)
+            DataTable temp = new DataTable();
+            using (SqlConnection con = new SqlConnection(connectionString))
             {
-                txtBusID.Text = row["BusID"].ToString();
-                cmbBusNumber.Text = row["BusNumber"].ToString();
-                txtTicketPrice.Text = row["TicketPrice"].ToString();
-                txtTicketID.Text = row["TicketID"].ToString();
-                txtOrigin.Text = row["OriginName"].ToString();
-                txtDestination.Text = row["DestinationName"].ToString();
-                dtpPurchase.Value = Convert.ToDateTime(row["PurchaseDate"]);
-                dtpDeparture.Value = Convert.ToDateTime(row["DepartureDate"]);
+                // execute SearchItemById with three arguments
+                using (SqlCommand cmd = new SqlCommand("SearchItemById", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@TableName", "tbTicket");
+                    cmd.Parameters.AddWithValue("@PrimaryKeyName", "TicketID");
+                    cmd.Parameters.AddWithValue("@Id", txtSearch.Text);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(temp);
+                    }
+                    gridTicket.DataSource = temp;
+                }
             }
-            DataTable temp = ticketTable.Clone();
-            temp.ImportRow(row);
-            gridTicket.DataSource = temp;
         }
 
         void refreshGridTicket()
         {
-            fillTicketTable();
+            //fillTicketTable();
+            addFirst10RowsToTicketTale();
             gridTicket.DataSource = ticketTable;
         }
 
@@ -274,6 +280,68 @@ namespace PABMS
                 return false;
             }
             return true;
+        }
+
+        // Method to check if the user is at the end of the DataGridView
+        public bool IsAtEndOfDataGridView(DataGridView dataGridView)
+        {
+            gridTicket.SuspendLayout();
+            if (dataGridView.Rows.Count == 0)
+                return false; // No rows in DataGridView.
+
+            // Get the index of the last row that is currently displayed.
+            int lastVisibleRowIndex = dataGridView.FirstDisplayedScrollingRowIndex;
+            for (int i = dataGridView.FirstDisplayedScrollingRowIndex; i < dataGridView.Rows.Count; i++)
+            {
+                if (dataGridView.Rows[i].Displayed)
+                {
+                    lastVisibleRowIndex = i;
+                }
+                else
+                {
+                    break; // Exit the loop once you find the first row that is not displayed.
+                }
+            }
+            gridTicket.ResumeLayout();
+            return lastVisibleRowIndex == dataGridView.Rows.Count - 1;
+        }
+
+        void addFirst10RowsToTicketTale()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("SELECT * FROM tbTicket ORDER BY TicketID OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY", connection);
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(ticketTable);
+                }
+                connection.Close();
+            }
+        }
+        void addNext10RowsToTicketTale()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("SELECT * FROM tbTicket ORDER BY TicketID OFFSET @offset ROWS FETCH NEXT 10 ROWS ONLY", connection);
+                command.Parameters.AddWithValue("@offset", offset);
+                offset += 10;
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(ticketTable);
+                }
+                connection.Close();
+            }
+        }
+
+        // create a list of foo and give it 5 items
+        private void gridTicket_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (IsAtEndOfDataGridView(gridTicket))
+            {
+                
+            }
         }
     }
 }

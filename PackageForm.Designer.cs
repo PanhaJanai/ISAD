@@ -42,6 +42,7 @@
             label11 = new Label();
             label1 = new Label();
             panel3 = new Panel();
+            cmbTruckNumber = new ComboBox();
             label8 = new Label();
             txtTruckID = new TextBox();
             label9 = new Label();
@@ -58,7 +59,6 @@
             label19 = new Label();
             label2 = new Label();
             txtPackageValue = new TextBox();
-            cmbTruckNumber = new ComboBox();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridPackage).BeginInit();
             SuspendLayout();
@@ -213,6 +213,15 @@
             panel3.Size = new Size(443, 227);
             panel3.TabIndex = 27;
             // 
+            // cmbTruckNumber
+            // 
+            cmbTruckNumber.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            cmbTruckNumber.FormattingEnabled = true;
+            cmbTruckNumber.Location = new Point(178, 117);
+            cmbTruckNumber.Name = "cmbTruckNumber";
+            cmbTruckNumber.Size = new Size(250, 37);
+            cmbTruckNumber.TabIndex = 11;
+            // 
             // label8
             // 
             label8.AutoSize = true;
@@ -307,6 +316,7 @@
             // 
             gridPackage.AllowUserToAddRows = false;
             gridPackage.AllowUserToDeleteRows = false;
+            gridPackage.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             gridPackage.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gridPackage.Location = new Point(255, 672);
             gridPackage.Name = "gridPackage";
@@ -372,15 +382,6 @@
             txtPackageValue.Name = "txtPackageValue";
             txtPackageValue.Size = new Size(250, 34);
             txtPackageValue.TabIndex = 37;
-            // 
-            // cmbTruckNumber
-            // 
-            cmbTruckNumber.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            cmbTruckNumber.FormattingEnabled = true;
-            cmbTruckNumber.Location = new Point(178, 117);
-            cmbTruckNumber.Name = "cmbTruckNumber";
-            cmbTruckNumber.Size = new Size(250, 37);
-            cmbTruckNumber.TabIndex = 11;
             // 
             // PackageForm
             // 

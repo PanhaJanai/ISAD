@@ -65,7 +65,7 @@ namespace PABMS
             row["OriginName"] = txtOrigin.Text;
             row["DestinationName"] = txtDestination.Text;
             row["TruckID"] = txtTruckID.Text;
-            row["DriverNumber"] = cmbTruckNumber.Text ;
+            row["DriverNumber"] = cmbTruckNumber.Text;
 
             saveTable.Rows.Add(row);
             MessageBox.Show("Package added to save list", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -145,7 +145,7 @@ namespace PABMS
                     command.Parameters.AddWithValue("@OriginName", txtOrigin.Text);
                     command.Parameters.AddWithValue("@DestinationName", txtDestination.Text);
                     command.Parameters.AddWithValue("@TruckID", txtTruckID.Text);
-                    command.Parameters.AddWithValue("@DriverNumber", cmbTruckNumber.Text );
+                    command.Parameters.AddWithValue("@DriverNumber", cmbTruckNumber.Text);
                     command.Parameters.AddWithValue("@PackageID", txtPackageID.Text);
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -197,7 +197,11 @@ namespace PABMS
 
         bool isAllFilled()
         {
-            return !string.IsNullOrEmpty(txtPackageName.Text) && !string.IsNullOrEmpty(txtPackagePrice.Text) && !string.IsNullOrEmpty(txtReceiverContact.Text) && !string.IsNullOrEmpty(txtOrigin.Text) && !string.IsNullOrEmpty(txtDestination.Text) && !string.IsNullOrEmpty(txtTruckID.Text) && !string.IsNullOrEmpty(cmbTruckNumber.Text );
+            return !string.IsNullOrEmpty(txtPackageName.Text) && !string.IsNullOrEmpty(txtPackagePrice.Text) && !string.IsNullOrEmpty(txtReceiverContact.Text) && !string.IsNullOrEmpty(txtOrigin.Text) && !string.IsNullOrEmpty(txtDestination.Text) && !string.IsNullOrEmpty(txtTruckID.Text) && !string.IsNullOrEmpty(cmbTruckNumber.Text);
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
         }
     }
 }
