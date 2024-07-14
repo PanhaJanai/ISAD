@@ -45,7 +45,7 @@
             label14 = new Label();
             btnNew = new Button();
             btnUpdate = new Button();
-            btnSearch = new Button();
+            btnAdd = new Button();
             btnSave = new Button();
             txtSearch = new TextBox();
             gridBus = new DataGridView();
@@ -54,6 +54,7 @@
             panel2 = new Panel();
             label7 = new Label();
             cmbBusTypeName = new ComboBox();
+            btnSearch = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridBus).BeginInit();
             panel2.SuspendLayout();
@@ -172,6 +173,7 @@
             cmbDriverTel.Name = "cmbDriverTel";
             cmbDriverTel.Size = new Size(250, 37);
             cmbDriverTel.TabIndex = 53;
+            cmbDriverTel.SelectedIndexChanged += cmbDriverTel_SelectedIndexChanged_1;
             // 
             // label5
             // 
@@ -239,6 +241,7 @@
             btnNew.TabIndex = 51;
             btnNew.Text = "NEW";
             btnNew.UseVisualStyleBackColor = false;
+            btnNew.Click += btnNew_Click;
             // 
             // btnUpdate
             // 
@@ -251,18 +254,20 @@
             btnUpdate.TabIndex = 50;
             btnUpdate.Text = "UPDATE";
             btnUpdate.UseVisualStyleBackColor = false;
+            btnUpdate.Click += btnUpdate_Click;
             // 
-            // btnSearch
+            // btnAdd
             // 
-            btnSearch.BackColor = SystemColors.ActiveCaption;
-            btnSearch.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSearch.Location = new Point(602, 934);
-            btnSearch.Margin = new Padding(5, 4, 5, 4);
-            btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(177, 50);
-            btnSearch.TabIndex = 49;
-            btnSearch.Text = "SEARCH";
-            btnSearch.UseVisualStyleBackColor = false;
+            btnAdd.BackColor = SystemColors.ActiveCaption;
+            btnAdd.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            btnAdd.Location = new Point(602, 934);
+            btnAdd.Margin = new Padding(5, 4, 5, 4);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(177, 50);
+            btnAdd.TabIndex = 49;
+            btnAdd.Text = "ADD";
+            btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click;
             // 
             // btnSave
             // 
@@ -275,6 +280,7 @@
             btnSave.TabIndex = 48;
             btnSave.Text = "SAVE";
             btnSave.UseVisualStyleBackColor = false;
+            btnSave.Click += btnSave_Click;
             // 
             // txtSearch
             // 
@@ -289,10 +295,13 @@
             // 
             // gridBus
             // 
+            gridBus.AllowUserToAddRows = false;
+            gridBus.AllowUserToDeleteRows = false;
             gridBus.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gridBus.Location = new Point(305, 623);
             gridBus.Margin = new Padding(5, 4, 5, 4);
             gridBus.Name = "gridBus";
+            gridBus.ReadOnly = true;
             gridBus.RowHeadersWidth = 51;
             gridBus.RowTemplate.Height = 29;
             gridBus.Size = new Size(1045, 277);
@@ -355,6 +364,20 @@
             cmbBusTypeName.Name = "cmbBusTypeName";
             cmbBusTypeName.Size = new Size(250, 37);
             cmbBusTypeName.TabIndex = 53;
+            cmbBusTypeName.SelectedIndexChanged += cmbBusTypeName_SelectedIndexChanged;
+            // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = Color.FromArgb(255, 192, 128);
+            btnSearch.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnSearch.Location = new Point(697, 561);
+            btnSearch.Margin = new Padding(5, 4, 5, 4);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(118, 34);
+            btnSearch.TabIndex = 50;
+            btnSearch.Text = "SEARCH";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
             // 
             // BusForm
             // 
@@ -366,8 +389,9 @@
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(txtBusNo);
-            Controls.Add(btnUpdate);
             Controls.Add(btnSearch);
+            Controls.Add(btnUpdate);
+            Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
             Controls.Add(panel2);
@@ -404,7 +428,7 @@
         private Label label7;
         private Button btnNew;
         private Button btnUpdate;
-        private Button btnSearch;
+        private Button btnAdd;
         private Button btnSave;
         private Panel panel1;
         private TextBox txtTicketPrice;
@@ -420,5 +444,6 @@
         private TextBox txtBusTypeID;
         private ComboBox cmbBusTypeName;
         private Panel panel2;
+        private Button btnSearch;
     }
 }

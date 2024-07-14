@@ -59,6 +59,7 @@
             label19 = new Label();
             label2 = new Label();
             txtPackageValue = new TextBox();
+            btnSearch = new Button();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridPackage).BeginInit();
             SuspendLayout();
@@ -101,7 +102,7 @@
             // 
             btnAdd.BackColor = SystemColors.ActiveCaption;
             btnAdd.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            btnAdd.Location = new Point(525, 896);
+            btnAdd.Location = new Point(542, 896);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(152, 50);
             btnAdd.TabIndex = 43;
@@ -178,6 +179,7 @@
             txtPackageID.Location = new Point(488, 161);
             txtPackageID.Multiline = true;
             txtPackageID.Name = "txtPackageID";
+            txtPackageID.ReadOnly = true;
             txtPackageID.Size = new Size(250, 34);
             txtPackageID.TabIndex = 31;
             // 
@@ -239,6 +241,7 @@
             txtTruckID.Location = new Point(178, 76);
             txtTruckID.Multiline = true;
             txtTruckID.Name = "txtTruckID";
+            txtTruckID.ReadOnly = true;
             txtTruckID.Size = new Size(250, 34);
             txtTruckID.TabIndex = 9;
             // 
@@ -383,6 +386,18 @@
             txtPackageValue.Size = new Size(250, 34);
             txtPackageValue.TabIndex = 37;
             // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = Color.FromArgb(255, 192, 128);
+            btnSearch.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btnSearch.Location = new Point(763, 610);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(152, 34);
+            btnSearch.TabIndex = 44;
+            btnSearch.Text = "UPDATE";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
+            // 
             // PackageForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -399,6 +414,7 @@
             Controls.Add(label10);
             Controls.Add(label14);
             Controls.Add(btnNew);
+            Controls.Add(btnSearch);
             Controls.Add(btnUpdate);
             Controls.Add(btnAdd);
             Controls.Add(btnSave);
@@ -469,5 +485,6 @@
         private Label label2;
         private TextBox txtPackageValue;
         private ComboBox cmbTruckNumber;
+        private Button btnSearch;
     }
 }

@@ -27,8 +27,8 @@ namespace PABMS
             InitializeComponent();
 
             //fillTicketTable();
-            //addNext10RowsToTicketTale();
-            addFirst10RowsToTicketTale();
+            //addNext10RowsToTicketTable();
+            addFirst10RowsToTicketTable();
             fillBusTable();
             fillcmbBusNumber();
 
@@ -91,7 +91,7 @@ namespace PABMS
         {
             SavingDialogue dialog = new SavingDialogue(saveTable);
             dialog.ShowDialog();
-            saveTable = dialog.save_table;
+            saveTable = dialog.save_table.Copy();
 
             try
             {
@@ -190,25 +190,6 @@ namespace PABMS
             }
         }
 
-        void fillTicketTable()
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand command = new SqlCommand("SELECT * FROM tbTicket", connection);
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-                    {
-                        adapter.Fill(ticketTable);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         void fillcmbBusNumber()
         {
             cmbBusNumber.Items.Clear();
@@ -242,6 +223,11 @@ namespace PABMS
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            search("tbTicket", "TicketID", txtSearch.Text);
+        }
+
+        void search(string tableName, string primaryKeyName, string id)
+        {
             DataTable temp = new DataTable();
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -249,9 +235,9 @@ namespace PABMS
                 using (SqlCommand cmd = new SqlCommand("SearchItemById", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@TableName", "tbTicket");
-                    cmd.Parameters.AddWithValue("@PrimaryKeyName", "TicketID");
-                    cmd.Parameters.AddWithValue("@Id", txtSearch.Text);
+                    cmd.Parameters.AddWithValue("@TableName", tableName);
+                    cmd.Parameters.AddWithValue("@PrimaryKeyName", primaryKeyName);
+                    cmd.Parameters.AddWithValue("@Id", id);
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                     {
                         adapter.Fill(temp);
@@ -264,7 +250,7 @@ namespace PABMS
         void refreshGridTicket()
         {
             //fillTicketTable();
-            addFirst10RowsToTicketTale();
+            addFirst10RowsToTicketTable();
             gridTicket.DataSource = ticketTable;
         }
 
@@ -306,8 +292,10 @@ namespace PABMS
             return lastVisibleRowIndex == dataGridView.Rows.Count - 1;
         }
 
-        void addFirst10RowsToTicketTale()
+        void addFirst10RowsToTicketTable()
         {
+            ticketTable.Clear();
+            offset = 0;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -319,14 +307,14 @@ namespace PABMS
                 connection.Close();
             }
         }
-        void addNext10RowsToTicketTale()
+        void addNext10RowsToTicketTable()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand("SELECT * FROM tbTicket ORDER BY TicketID OFFSET @offset ROWS FETCH NEXT 10 ROWS ONLY", connection);
-                command.Parameters.AddWithValue("@offset", offset);
                 offset += 10;
+                command.Parameters.AddWithValue("@offset", offset);
                 using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
                     adapter.Fill(ticketTable);
@@ -340,7 +328,8 @@ namespace PABMS
         {
             if (IsAtEndOfDataGridView(gridTicket))
             {
-                
+                addNext10RowsToTicketTable();
+                gridTicket.Refresh();
             }
         }
     }

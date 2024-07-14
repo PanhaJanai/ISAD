@@ -1,41 +1,16 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
 using System.Configuration;
+using System.Drawing.Imaging;
 
 namespace PABMS
 {
     public partial class StaffForm : Form
     {
-        // these are all the component of this form:
-        //txtID
-        //txtFullName
-        //sex: cbMale and cbFemale
-        //dtpBirthDate
-        //txtStaffPosition
-        //txtStaffSalary
-        //txtStaffAddress
-        //txtStaffTel
-        //pbStaffPhoto
-        //cbStoppedWork
-        //txtSearch
-
-        // these are the column in tbStaff
-        //StaffID INT PRIMARY KEY IDENTITY(1,1),
-        //StaffName NVARCHAR(50),
-        //StaffSex CHAR(1),
-        //StaffBirthDate DATE,
-        //StaffPosition NVARCHAR(50),
-        //StaffAddress NVARCHAR(100),
-        //StaffTel NVARCHAR(20),
-        //Salary MONEY,
-        //HiredDate DATE,
-        //Photo VARBINARY(MAX),
-        //StoppedWork BIT
-
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
         DataTable staffTable = new DataTable();
         DataTable saveTable = new DataTable();
-        DataRow updateRow = null;
+        funcs funcs = new funcs();
 
         byte[] staffPhoto = null;
 
@@ -43,27 +18,17 @@ namespace PABMS
         {
             InitializeComponent();
 
-            fillStaffTable();
+            funcs.info = new funcs.Info(connectionString, "tbStaff", "StaffID", staffTable, gridStaff);
+            refreshGrid();
+
             saveTable = staffTable.Clone();
-            txtID.Text = getLastestStaffID().ToString();
+            txtID.Text = funcs.getLatestID().ToString();
         }
 
-        void fillStaffTable()
+        void refreshGrid()
         {
-            try
-            {
-                SqlConnection conn = new SqlConnection(connectionString);
-                conn.Open();
-                SqlCommand cmd = new SqlCommand("SELECT * FROM tbStaff", conn);
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(staffTable);
-                gridStaff.DataSource = staffTable;
-                conn.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            funcs.addFirst10RowsToDataTable();
+            gridStaff.DataSource = staffTable;
         }
 
         private void pbStaffPhoto_Click(object sender, EventArgs e)
@@ -114,13 +79,22 @@ namespace PABMS
         {
             if (pbStaffPhoto.Image != null)
             {
-                MemoryStream ms = new MemoryStream();
-                pbStaffPhoto.Image.Save(ms, pbStaffPhoto.Image.RawFormat);
-                staffPhoto = ms.ToArray();
-                return staffPhoto;
+                try
+                {
+                    MemoryStream ms = new MemoryStream();
+                    // Specify the format directly
+                    pbStaffPhoto.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                    staffPhoto = ms.ToArray();
+                    return staffPhoto;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred: " + ex.Message);
+                }
             }
             return null;
         }
+
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -144,10 +118,7 @@ namespace PABMS
         {
             SavingDialogue savingDialogue = new SavingDialogue(saveTable);
             savingDialogue.ShowDialog();
-
             saveTable = savingDialogue.save_table;
-
-            staffTable.Merge(saveTable);
 
             if (saveTable != null)
             {
@@ -180,9 +151,7 @@ namespace PABMS
                     }
                     conn.Close();
                 }
-
-                staffTable.AcceptChanges();
-                gridStaff.Refresh();
+                refreshGrid();
                 saveTable.Clear();
                 MessageBox.Show("Data saved successfully");
             }
@@ -224,21 +193,6 @@ namespace PABMS
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            // also update staffTable in this row that was updated
-            DataRow[] rows = staffTable.Select("StaffID = " + txtID.Text);
-            if (rows.Length > 0)
-            {
-                updateRow = rows[0];
-                updateRow["StaffName"] = txtFullName.Text;
-                updateRow["StaffSex"] = cbMale.Checked ? 'M' : 'F';
-                updateRow["StaffBirthDate"] = dtpBirthDate.Value;
-                updateRow["StaffPosition"] = txtStaffPosition.Text;
-                updateRow["StaffAddress"] = txtStaffAddress.Text;
-                updateRow["StaffTel"] = txtStaffTel.Text;
-                updateRow["Salary"] = Convert.ToDecimal(txtStaffSalary.Text);
-                updateRow["Photo"] = pbStaffPhoto.Image == null ? DBNull.Value : getImageByteArray();
-                updateRow["StoppedWork"] = cbStoppedWork.Checked;
-            }
             try
             {
                 using (SqlConnection con = new SqlConnection(connectionString))
@@ -255,14 +209,19 @@ namespace PABMS
                         cmd.Parameters.AddWithValue("@StaffAddress", txtStaffAddress.Text);
                         cmd.Parameters.AddWithValue("@StaffTel", txtStaffTel.Text);
                         cmd.Parameters.AddWithValue("@Salary", Convert.ToDecimal(txtStaffSalary.Text));
-                        cmd.Parameters.AddWithValue("@Photo", pbStaffPhoto.Image == null ? DBNull.Value : getImageByteArray());
+
+                        if (getImageByteArray() != null)
+                        {
+                            cmd.Parameters.AddWithValue("@Photo", getImageByteArray());
+                        }
+
                         cmd.Parameters.AddWithValue("@StoppedWork", cbStoppedWork.Checked);
 
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Data updated successfully");
                     }
                     con.Close();
-                    staffTable.AcceptChanges();
+                    refreshGrid();
                 }
             }
             catch (Exception ex)
@@ -271,15 +230,10 @@ namespace PABMS
             }
         }
 
-        int getLastestStaffID()
-        {
-            return int.Parse(staffTable.Rows[staffTable.Rows.Count - 1]["StaffID"].ToString()) + 1;
-        }
-
         private void btnNew_Click(object sender, EventArgs e)
         {
             // clear all controls
-            txtID.Text = getLastestStaffID().ToString();
+            txtID.Text = funcs.getLatestID().ToString();
             txtFullName.Text = "";
             cbMale.Checked = false;
             cbFemale.Checked = false;
@@ -293,6 +247,7 @@ namespace PABMS
             cbMale.Checked = false;
             cbFemale.Checked = false;
             dtpBirthDate.Value = DateTime.Now;
+            refreshGrid();
         }
 
         private void StaffForm_Load(object sender, EventArgs e)

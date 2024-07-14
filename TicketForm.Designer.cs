@@ -340,7 +340,7 @@
             gridTicket.ReadOnly = true;
             gridTicket.RowHeadersWidth = 51;
             gridTicket.RowTemplate.Height = 29;
-            gridTicket.Size = new Size(1129, 159);
+            gridTicket.Size = new Size(1129, 304);
             gridTicket.TabIndex = 28;
             gridTicket.Scroll += gridTicket_Scroll;
             // 

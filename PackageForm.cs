@@ -16,17 +16,14 @@ namespace PABMS
         {
             InitializeComponent();
 
-            fillPackageTable();
-            txtPackageID.Text = getLatestID().ToString();
+            addFirst10RowsToDataTable(packageTable, "tbPackage", "PackageID");
+            //txtPackageID.Text = getLatestID().ToString();
             //packageTable.PrimaryKey = new DataColumn[] { packageTable.Columns["PackageID"] };
             saveTable = packageTable.Clone();
             gridPackage.DataSource = packageTable;
 
-            gridPackage.CellClick += gridPackage_CellClick;
-            btnAdd.Click += btnAdd_Click;
-            btnSave.Click += btnSave_Click;
-            btnUpdate.Click += btnUpdate_Click;
-            btnNew.Click += btnNew_Click;
+            gridPackage.Scroll += gridPackage_Scroll;
+
         }
 
         void gridPackage_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -75,7 +72,7 @@ namespace PABMS
         {
             SavingDialogue dialog = new SavingDialogue(saveTable);
             dialog.ShowDialog();
-            saveTable = dialog.save_table;
+            saveTable = dialog.save_table.Copy();
 
             try
             {
@@ -104,7 +101,6 @@ namespace PABMS
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
             saveTable.Clear();
             refreshGridPackage();
         }
@@ -159,39 +155,23 @@ namespace PABMS
             }
         }
 
-        private void fillPackageTable()
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand command = new SqlCommand("SELECT * FROM tbPackage", connection);
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-                    {
-                        adapter.Fill(packageTable);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         int getLatestID()
         {
             int max = 0;
-            if (packageTable.Rows.Count > 0)
+            // query to get the latest ID from the database
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                DataRow row = packageTable.Rows[packageTable.Rows.Count - 1];
-                max = Convert.ToInt32(row["PackageID"]);
+                connection.Open();
+                SqlCommand command = new SqlCommand("SELECT MAX(PackageID) FROM tbPackage", connection);
+                max = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
             }
             return max + 1;
         }
 
         void refreshGridPackage()
         {
-            fillPackageTable();
+            addFirst10RowsToDataTable(packageTable, "tbPackage", "PackageID");
             gridPackage.DataSource = packageTable;
         }
 
@@ -200,8 +180,99 @@ namespace PABMS
             return !string.IsNullOrEmpty(txtPackageName.Text) && !string.IsNullOrEmpty(txtPackagePrice.Text) && !string.IsNullOrEmpty(txtReceiverContact.Text) && !string.IsNullOrEmpty(txtOrigin.Text) && !string.IsNullOrEmpty(txtDestination.Text) && !string.IsNullOrEmpty(txtTruckID.Text) && !string.IsNullOrEmpty(cmbTruckNumber.Text);
         }
 
-        private void label11_Click(object sender, EventArgs e)
+        int offset = 0;
+        public bool IsAtEndOfDataGridView(DataGridView dataGridView)
         {
+            gridPackage.SuspendLayout();
+            if (dataGridView.Rows.Count == 0)
+                return false; // No rows in DataGridView.
+
+            // Get the index of the last row that is currently displayed.
+            int lastVisibleRowIndex = dataGridView.FirstDisplayedScrollingRowIndex;
+            for (int i = dataGridView.FirstDisplayedScrollingRowIndex; i < dataGridView.Rows.Count; i++)
+            {
+                if (dataGridView.Rows[i].Displayed)
+                {
+                    lastVisibleRowIndex = i;
+                }
+                else
+                {
+                    break; // Exit the loop once you find the first row that is not displayed.
+                }
+            }
+            gridPackage.ResumeLayout();
+            return lastVisibleRowIndex == dataGridView.Rows.Count - 1;
+        }
+
+        void addFirst10RowsToDataTable(DataTable dt, string tableName, string tablePrimaryID)
+        {
+            dt.Clear();
+            offset = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand($"SELECT * FROM {tableName} ORDER BY {tablePrimaryID} OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY", connection);
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(packageTable);
+                }
+                connection.Close();
+            }
+        }
+        void addNext10RowsToDataTable(DataTable dt, string tableName, string tablePrimaryID)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand($"SELECT * FROM {tableName} ORDER BY {tablePrimaryID} OFFSET @offset ROWS FETCH NEXT 10 ROWS ONLY", connection);
+                offset += 10;
+                command.Parameters.AddWithValue("@offset", offset);
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(packageTable);
+                }
+                connection.Close();
+            }
+        }
+
+        void addRowWhenScrollingEnds(DataGridView grid, string tableName, string primaryKeyName)
+        {
+            if (IsAtEndOfDataGridView(grid))
+            {
+                addNext10RowsToDataTable(packageTable, tableName, primaryKeyName);
+                grid.Refresh();
+            }
+        }
+
+        void search(string tableName, string primaryKeyName, string id, DataGridView grid)
+        {
+            DataTable temp = new DataTable();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                // execute SearchItemById with three arguments
+                using (SqlCommand cmd = new SqlCommand("SearchItemById", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@TableName", tableName);
+                    cmd.Parameters.AddWithValue("@PrimaryKeyName", primaryKeyName);
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(temp);
+                    }
+                    grid.DataSource = temp;
+                }
+            }
+        }
+
+        private void gridPackage_Scroll(object sender, ScrollEventArgs e)
+        {
+            addRowWhenScrollingEnds(gridPackage, "tbTicket", "TicketID");
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            search("tbPackage", "PackageID", txtSearch.Text, gridPackage);
         }
     }
 }

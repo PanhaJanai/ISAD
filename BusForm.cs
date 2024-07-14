@@ -9,44 +9,40 @@ namespace PABMS
 {
     public partial class BusForm : Form
     {
-        // tbBus Schema 
-        //  BusID INT PRIMARY KEY IDENTITY(1,1),
-        //  BusNumber NVARCHAR(10),
-        //  BusTypeID INT REFERENCES tbBusType(BusTypeID) ON DELETE CASCADE ON UPDATE CASCADE,
-        //  BusTypeName NVARCHAR(50),
-        //  TicketPrice MONEY,
-        //  DriverID INT REFERENCES tbDriver(DriverID) ON DELETE CASCADE ON UPDATE CASCADE,
-        //  DriverName NVARCHAR(50),
-        //  DriverTel NVARCHAR(20)
 
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
         private SqlDataAdapter dataAdapter;
-        private DataTable busTable;
-        DataTable saveTable;
+        private DataTable busTable = new DataTable();
+        DataTable driverTable = new DataTable();
+        DataTable busTypeTable = new DataTable();
+        DataTable saveTable = new DataTable();
+        funcs funcs = new funcs();
 
         public BusForm()
         {
             InitializeComponent();
+            funcs.info = new funcs.Info(connectionString, "tbBus", "BusID", busTable, gridBus);
 
-            fillBusTable();
+            refreshGrid();
 
             saveTable = busTable.Clone();
-            txtBusID.Text = getLatestBusID().ToString();
+            txtBusID.Text = funcs.getLatestID().ToString();
             gridBus.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            driverTable = funcs.fillComboBox(cmbDriverTel, "tbDriver", "DriverTel");
+            busTypeTable = funcs.fillComboBox(cmbBusTypeName, "tbBusType", "BusTypeName");
+        }
+
+        void refreshGrid()
+        {
+            funcs.addFirst10RowsToDataTable();
+            gridBus.DataSource = busTable;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            // search for bus by busID using busTable and highlight the row
-            foreach (DataGridViewRow row in gridBus.Rows)
-            {
-                if (row.Cells[0].Value.ToString().Equals(txtSearch.Text))
-                {
-                    row.Selected = true;
-                    gridBus.CurrentCell = row.Cells[0];
-                    break;
-                }
-            }
+            funcs.info.id = int.Parse(txtSearch.Text);
+            funcs.search();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -67,26 +63,14 @@ namespace PABMS
                     cmd.Parameters.AddWithValue("@DriverTel", cmbDriverTel.Text);
                     cmd.ExecuteNonQuery();
                     con.Close();
+                    MessageBox.Show("Updated");
+                    refreshGrid();
                 }
             }
             catch
             {
                 MessageBox.Show("Error updating data");
             }
-        }
-
-        private void cmbDriverTel_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DataGridViewRow row = gridBus.CurrentRow;
-            txtBusID.Text = row.Cells[0].Value.ToString();
-            txtBusNo.Text = row.Cells[1].Value.ToString();
-            txtBusTypeID.Text = row.Cells[2].Value.ToString();
-            cmbBusTypeName.Text = row.Cells[3].Value.ToString();
-            txtTicketPrice.Text = row.Cells[4].Value.ToString();
-            txtDriverID.Text = row.Cells[5].Value.ToString();
-            txtDriverName.Text = row.Cells[6].Value.ToString();
-            cmbDriverTel.Text = row.Cells[7].Value.ToString();
-
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -129,6 +113,7 @@ namespace PABMS
                         cmd.Parameters.AddWithValue("@DriverTel", row["DriverTel"]);
                         cmd.ExecuteNonQuery();
                         con.Close();
+                        refreshGrid();
                     }
                 }
             }
@@ -136,13 +121,13 @@ namespace PABMS
             {
                 MessageBox.Show("Error saving data");
             }
-
+            MessageBox.Show("Saved");
             saveTable.Clear();
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            txtBusID.Text = getLatestBusID().ToString();
+            txtBusID.Text = funcs.getLatestID().ToString();
             txtBusNo.Text = "";
             txtBusTypeID.Text = "";
             cmbBusTypeName.Text = "";
@@ -150,6 +135,7 @@ namespace PABMS
             txtDriverID.Text = "";
             txtDriverName.Text = "";
             cmbDriverTel.Text = "";
+            refreshGrid();
         }
 
         private void gridBus_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -165,21 +151,20 @@ namespace PABMS
             cmbDriverTel.Text = row.Cells[7].Value.ToString();
         }
 
-        int getLatestBusID()
+        private void cmbDriverTel_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            return busTable.Rows[busTable.Rows.Count - 1].Field<int>("BusID") + 1;
+            // txtDriverID
+            // txtDriverName
+            DataRow[] rows = driverTable.Select($"DriverTel = '{cmbDriverTel.Text}'");
+            txtDriverID.Text = rows[0].Field<int>("DriverID").ToString();
+            txtDriverName.Text = rows[0].Field<string>("DriverName");
         }
 
-        void fillBusTable()
+        private void cmbBusTypeName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                dataAdapter = new SqlDataAdapter("SELECT * FROM tbBus", con);
-                busTable = new DataTable();
-                dataAdapter.Fill(busTable);
-                gridBus.DataSource = busTable;
-            }
+            // txtBusTypeID
+            DataRow[] rows = busTypeTable.Select($"BusTypeName = '{cmbBusTypeName.Text}'");
+            txtBusTypeID.Text = rows[0].Field<int>("BusTypeID").ToString();
         }
     }
 }
