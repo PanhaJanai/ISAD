@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             gridPaymentTicket = new DataGridView();
             label14 = new Label();
             btnNew = new Button();
@@ -65,23 +65,23 @@
             gridPaymentTicket.AllowUserToAddRows = false;
             gridPaymentTicket.AllowUserToDeleteRows = false;
             gridPaymentTicket.BackgroundColor = Color.FromArgb(128, 255, 128);
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = SystemColors.Control;
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = Color.FromArgb(0, 192, 0);
-            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
-            gridPaymentTicket.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(0, 192, 0);
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            gridPaymentTicket.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             gridPaymentTicket.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gridPaymentTicket.GridColor = SystemColors.Control;
             gridPaymentTicket.Location = new Point(315, 595);
             gridPaymentTicket.Name = "gridPaymentTicket";
             gridPaymentTicket.ReadOnly = true;
             gridPaymentTicket.RowHeadersWidth = 51;
-            dataGridViewCellStyle6.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(0, 192, 0);
-            gridPaymentTicket.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(0, 192, 0);
+            gridPaymentTicket.RowsDefaultCellStyle = dataGridViewCellStyle2;
             gridPaymentTicket.RowTemplate.Height = 29;
             gridPaymentTicket.Size = new Size(1052, 291);
             gridPaymentTicket.TabIndex = 68;
@@ -379,6 +379,7 @@
             Name = "PaymentTicketForm";
             Text = "PaymentForm";
             WindowState = FormWindowState.Maximized;
+            Load += PaymentTicketForm_Load;
             ((System.ComponentModel.ISupportInitialize)gridPaymentTicket).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

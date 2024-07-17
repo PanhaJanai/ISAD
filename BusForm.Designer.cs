@@ -307,6 +307,7 @@
             gridBus.Size = new Size(1045, 277);
             gridBus.TabIndex = 53;
             gridBus.CellClick += gridBus_CellClick;
+            gridBus.Sorted += gridBus_Sorted;
             // 
             // label4
             // 

@@ -9,41 +9,38 @@ namespace PABMS
 {
     public partial class TruckForm : Form
     {
-        // tbTruck Schema 
-        //  TruckID INT PRIMARY KEY IDENTITY(1,1),
-        //      TruckNumber NVARCHAR(10),
-        //DriverID INT REFERENCES tbDriver(DriverID) ON DELETE CASCADE ON UPDATE CASCADE,
-        //DriverName NVARCHAR(50),
-        //DriverTel NVARCHAR(20)
 
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
-        private SqlDataAdapter dataAdapter;
-        private DataTable truckTable;
+        private DataTable truckTable = new DataTable();
+        DataTable driverTable = new DataTable();
         DataTable saveTable;
+
+        Funcs funcs = new Funcs();
 
         public TruckForm()
         {
             InitializeComponent();
 
-            fillTruckTable();
+            funcs.info = new Funcs.Info(connectionString, "tbTruck", "TruckID", truckTable, gridTruck);
+
+            refreshGrid();
+
+            // add DriverID, DriverName, DriverTel to driverTable
+            driverTable.Columns.Add("DriverID");
+            driverTable.Columns.Add("DriverName");
+            driverTable.Columns.Add("DriverTel");
+
+            fillCmbDriverTel();
 
             saveTable = truckTable.Clone();
-            txtTruckID.Text = getLatestTruckID().ToString();
+            txtTruckID.Text = funcs.getLatestID().ToString();
             gridTruck.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            // search for truck by truckID using truckTable and highlight the row
-            foreach (DataGridViewRow row in gridTruck.Rows)
-            {
-                if (row.Cells[0].Value.ToString().Equals(txtSearch.Text))
-                {
-                    row.Selected = true;
-                    gridTruck.CurrentCell = row.Cells[0];
-                    break;
-                }
-            }
+            funcs.info.id = Convert.ToInt32(txtSearch.Text);
+            funcs.searchByID();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -61,23 +58,19 @@ namespace PABMS
                     cmd.Parameters.AddWithValue("@DriverTel", cmbDriverTel.Text);
                     cmd.ExecuteNonQuery();
                     con.Close();
+                    refreshGrid();
                 }
-            } catch
+            }
+            catch
             {
                 MessageBox.Show("Error updating data");
             }
-        }
-
-        private void cmbTruckTel_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Function body is empty
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             // create a new row in trucktable and add the data
             DataRow row = saveTable.NewRow();
-            row["TruckID"] = txtTruckID.Text;
             row["TruckNumber"] = txtTruckNumber.Text;
             row["DriverID"] = txtDriverID.Text;
             row["DriverName"] = txtDriverName.Text;
@@ -109,23 +102,25 @@ namespace PABMS
                         con.Close();
                     }
                 }
+                refreshGrid();
             }
             catch
             {
                 MessageBox.Show("Error saving data");
             }
 
-            
+
             saveTable.Clear();
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            txtTruckID.Text = getLatestTruckID().ToString();
+            txtTruckID.Text = funcs.getLatestID().ToString();
             txtTruckNumber.Text = "";
             txtDriverID.Text = "";
             txtDriverName.Text = "";
             cmbDriverTel.Text = "";
+            refreshGrid();
         }
 
         private void gridTruck_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -139,26 +134,46 @@ namespace PABMS
 
         }
 
-        int getLatestTruckID()
+        void refreshGrid()
         {
-            return truckTable.Rows[truckTable.Rows.Count - 1].Field<int>("TruckID") + 1;
-        }
-
-        void fillTruckTable()
-        {
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                dataAdapter = new SqlDataAdapter("SELECT * FROM tbTruck", con);
-                truckTable = new DataTable();
-                dataAdapter.Fill(truckTable);
-                gridTruck.DataSource = truckTable;
-            }
+            funcs.addFirst10RowsToDataTable();
+            gridTruck.DataSource = truckTable;
         }
 
         private void label11_Click(object sender, EventArgs e)
         {
-            txtTruckID.Text = getLatestTruckID().ToString();
+            txtTruckID.Text = funcs.getLatestID().ToString();
+        }
+
+        void fillCmbDriverTel()
+        {
+            // query DriverName, DriverName, DriverTel from tbDriver
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SELECT * FROM tbDriver", con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    driverTable.Rows.Add(reader["DriverID"].ToString(), reader["DriverName"].ToString(), reader["DriverTel"].ToString());
+                    cmbDriverTel.Items.Add(reader["DriverTel"].ToString());
+                }
+                con.Close();
+            }
+        }
+
+        private void cmbDriverTel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbDriverTel.SelectedIndex != -1)
+            {
+                txtDriverID.Text = driverTable.Rows[cmbDriverTel.SelectedIndex]["DriverID"].ToString();
+                txtDriverName.Text = driverTable.Rows[cmbDriverTel.SelectedIndex]["DriverName"].ToString();
+            }
+        }
+
+        private void gridTruck_Scroll(object sender, ScrollEventArgs e)
+        {
+            funcs.addRowWhenScrollingEnds();
         }
     }
 }

@@ -30,7 +30,8 @@ namespace PABMS
 
         DataTable tableCustomer = new DataTable();
         DataTable tableSave = new DataTable();
-        DataTable tableCus = new DataTable();
+
+        Funcs funcs = new Funcs();
 
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
 
@@ -38,13 +39,15 @@ namespace PABMS
         {
             InitializeComponent();
 
+            funcs.info = new Funcs.Info(connectionString, "tbCustomer", "CustomerID", tableCustomer, gridCustomer);
+
             btnAdd.Click += new EventHandler(btnAdd_Click);
             btnSave.Click += new EventHandler(btnSave_Click);
             btnUpdate.Click += new EventHandler(btnUpdate_Click);
             btnNew.Click += new EventHandler(btnNew_Click);
-
             fillGridWithNewData();
-            txtCusID.Text = (tableCustomer.Rows.Count + 1).ToString();
+
+            txtCusID.Text = funcs.getLatestID().ToString();
             tableSave = tableCustomer.Clone();
             gridCustomer.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
@@ -90,7 +93,7 @@ namespace PABMS
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            txtCusID.Text = (tableCustomer.Rows.Count + 1).ToString();
+            txtCusID.Text = funcs.getLatestID().ToString();
             txtCustomerName.Text = "";
             txtCusTel.Text = "";
             cbMale.Checked = false;
@@ -196,6 +199,17 @@ namespace PABMS
                 cbMale.Checked = false;
                 cbFemale.Checked = true;
             }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            funcs.info.id = Convert.ToInt32(txtSearch.Text);
+            funcs.searchByID();
+        }
+
+        private void gridCustomer_Scroll(object sender, ScrollEventArgs e)
+        {
+            funcs.addRowWhenScrollingEnds();
         }
     }
 }

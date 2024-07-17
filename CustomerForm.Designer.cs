@@ -45,6 +45,7 @@
             label3 = new Label();
             label4 = new Label();
             txtCusTel = new TextBox();
+            btnSearch = new Button();
             ((System.ComponentModel.ISupportInitialize)gridCustomer).BeginInit();
             SuspendLayout();
             // 
@@ -61,6 +62,7 @@
             gridCustomer.Size = new Size(1064, 261);
             gridCustomer.TabIndex = 68;
             gridCustomer.CellClick += gridCustomer_CellClick;
+            gridCustomer.Scroll += gridCustomer_Scroll;
             // 
             // label14
             // 
@@ -225,6 +227,17 @@
             txtCusTel.Size = new Size(250, 34);
             txtCusTel.TabIndex = 58;
             // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = SystemColors.ActiveCaption;
+            btnSearch.Location = new Point(747, 425);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(152, 34);
+            btnSearch.TabIndex = 64;
+            btnSearch.Text = "SEARCH";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
+            // 
             // CustomerForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -238,6 +251,7 @@
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
+            Controls.Add(btnSearch);
             Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
@@ -275,5 +289,7 @@
         private Label label3;
         private Label label4;
         private TextBox txtCusTel;
+        private Button button1;
+        private Button btnSearch;
     }
 }

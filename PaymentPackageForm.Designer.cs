@@ -39,6 +39,7 @@
             btnSave = new Button();
             txtSearch = new TextBox();
             panel1 = new Panel();
+            txtPackageName = new TextBox();
             txtPackagePrice = new TextBox();
             txtPackageID = new TextBox();
             txtCusID = new TextBox();
@@ -57,7 +58,6 @@
             label11 = new Label();
             label1 = new Label();
             btnSearch = new Button();
-            txtPackageName = new TextBox();
             ((System.ComponentModel.ISupportInitialize)gridPaymentPackage).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -173,6 +173,15 @@
             panel1.Size = new Size(1053, 172);
             panel1.TabIndex = 76;
             // 
+            // txtPackageName
+            // 
+            txtPackageName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtPackageName.Location = new Point(215, 69);
+            txtPackageName.Multiline = true;
+            txtPackageName.Name = "txtPackageName";
+            txtPackageName.Size = new Size(250, 34);
+            txtPackageName.TabIndex = 61;
+            // 
             // txtPackagePrice
             // 
             txtPackagePrice.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
@@ -218,6 +227,7 @@
             cmbCusTel.Name = "cmbCusTel";
             cmbCusTel.Size = new Size(250, 37);
             cmbCusTel.TabIndex = 59;
+            cmbCusTel.SelectedIndexChanged += cmbCusTel_SelectedIndexChanged;
             // 
             // txtCusName
             // 
@@ -351,15 +361,6 @@
             btnSearch.Text = "Search";
             btnSearch.UseVisualStyleBackColor = false;
             // 
-            // txtPackageName
-            // 
-            txtPackageName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtPackageName.Location = new Point(215, 69);
-            txtPackageName.Multiline = true;
-            txtPackageName.Name = "txtPackageName";
-            txtPackageName.Size = new Size(250, 34);
-            txtPackageName.TabIndex = 61;
-            // 
             // PaymentPackageForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -384,6 +385,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "PaymentPackageForm";
             Text = "PaymentForm";
+            Load += PaymentPackageForm_Load;
             ((System.ComponentModel.ISupportInitialize)gridPaymentPackage).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

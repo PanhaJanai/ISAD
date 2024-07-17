@@ -142,6 +142,7 @@
             cmbDriverTel.Name = "cmbDriverTel";
             cmbDriverTel.Size = new Size(517, 37);
             cmbDriverTel.TabIndex = 9;
+            cmbDriverTel.SelectedIndexChanged += cmbDriverTel_SelectedIndexChanged;
             // 
             // txtDriverID
             // 
@@ -159,9 +160,9 @@
             label5.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
             label5.Location = new Point(102, 128);
             label5.Name = "label5";
-            label5.Size = new Size(125, 29);
+            label5.Size = new Size(119, 29);
             label5.TabIndex = 7;
-            label5.Text = "Phone Tel";
+            label5.Text = "Driver Tel";
             // 
             // txtDriverName
             // 
@@ -259,6 +260,7 @@
             gridTruck.Size = new Size(1022, 279);
             gridTruck.TabIndex = 68;
             gridTruck.CellClick += gridTruck_CellClick;
+            gridTruck.Scroll += gridTruck_Scroll;
             // 
             // btnSearch
             // 

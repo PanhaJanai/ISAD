@@ -16,12 +16,12 @@ namespace PABMS
         DataTable driverTable = new DataTable();
         DataTable busTypeTable = new DataTable();
         DataTable saveTable = new DataTable();
-        funcs funcs = new funcs();
+        Funcs funcs = new Funcs();
 
         public BusForm()
         {
             InitializeComponent();
-            funcs.info = new funcs.Info(connectionString, "tbBus", "BusID", busTable, gridBus);
+            funcs.info = new Funcs.Info(connectionString, "tbBus", "BusID", busTable, gridBus);
 
             refreshGrid();
 
@@ -42,7 +42,7 @@ namespace PABMS
         private void btnSearch_Click(object sender, EventArgs e)
         {
             funcs.info.id = int.Parse(txtSearch.Text);
-            funcs.search();
+            funcs.searchByID();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -165,6 +165,11 @@ namespace PABMS
             // txtBusTypeID
             DataRow[] rows = busTypeTable.Select($"BusTypeName = '{cmbBusTypeName.Text}'");
             txtBusTypeID.Text = rows[0].Field<int>("BusTypeID").ToString();
+        }
+
+        private void gridBus_Sorted(object sender, EventArgs e)
+        {
+            funcs.addRowWhenScrollingEnds();
         }
     }
 }

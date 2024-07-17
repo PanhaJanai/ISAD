@@ -17,6 +17,7 @@ namespace PABMS
             public int StaffID { get; set; }
             public string StaffName { get; set; }
             public string StaffTel { get; set; }
+            public string StaffPosition { get; set; }
 
             public void fromDataTable(DataRow row)
             {
@@ -26,21 +27,25 @@ namespace PABMS
                 StaffID = Convert.ToInt32(row["StaffID"]);
                 StaffName = row["StaffName"].ToString();
                 StaffTel = row["StaffTel"].ToString();
+                StaffPosition = row["StaffPosition"].ToString();
             }
         }
 
         List<User> users = new List<User>();
         List<User> savedUsers = new List<User>();
 
-        DataTable tableUser = new DataTable();
-        DataTable tableSave = new DataTable();
-        DataTable tableUsr = new DataTable();
+        DataTable userTable = new DataTable();
+        DataTable saveTable = new DataTable();
+
+        Funcs funcs = new Funcs();
 
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
 
         public UserForm()
         {
             InitializeComponent();
+
+            funcs.info = new Funcs.Info(connectionString, "tbUser", "UserID", userTable, gridUser);
 
             fillCmbStaffTel();
             cmbStaffTel.SelectedIndexChanged += new EventHandler(cmbStaffTel_SelectedIndexChanged);
@@ -50,9 +55,9 @@ namespace PABMS
             btnUpdate.Click += new EventHandler(btnUpdate_Click);
             btnNew.Click += new EventHandler(btnNew_Click);
 
-            fillGridWithNewData();
-            txtUserID.Text = (tableUser.Rows.Count + 1).ToString();
-            tableSave = tableUser.Clone();
+            refreshGrid();
+            txtUserID.Text = funcs.getLatestID().ToString();
+            saveTable = userTable.Clone();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -64,7 +69,8 @@ namespace PABMS
                 UserPassword = txtUserPassword.Text,
                 StaffID = Convert.ToInt32(txtStaffID.Text),
                 StaffName = txtStaffName.Text,
-                StaffTel = cmbStaffTel.Text
+                StaffTel = cmbStaffTel.Text,
+                StaffPosition = txtStaffPosition.Text
             });
 
             MessageBox.Show("Data added successfully");
@@ -72,39 +78,38 @@ namespace PABMS
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            tableSave = userToDataTable(users);
+            saveTable = userToDataTable(users);
 
-            // Show dialogue box to make sure the data is correct
-            SavingDialogue saveDialogue = new SavingDialogue(tableSave);
+            SavingDialogue saveDialogue = new SavingDialogue(saveTable);
             saveDialogue.ShowDialog();
-            tableSave = saveDialogue.save_table;
-            saveDialogue.Dispose();
+            saveTable = saveDialogue.save_table;
 
-            foreach (DataRow row in tableSave.Rows)
+            foreach (DataRow row in saveTable.Rows)
             {
                 User user = new User();
                 user.fromDataTable(row);
                 savedUsers.Add(user);
             }
 
-            ExecuteSqlCommands(savedUsers, "INSERT INTO tbUser (Username, UserPassword, StaffID, StaffName, StaffTel) VALUES (@Username, @UserPassword, @StaffID, @StaffName, @StaffTel)");
+            ExecuteSqlCommands(savedUsers, "INSERT INTO tbUser (Username, UserPassword, StaffID, StaffName, StaffTel, StaffPosition) VALUES (@Username, @UserPassword, @StaffID, @StaffName, @StaffTel, @StaffPosition)");
 
-            tableUser.Clear();
-            tableSave.Clear();
-            fillGridWithNewData();
+            userTable.Clear();
+            saveTable.Clear();
+            refreshGrid();
 
             MessageBox.Show("Data saved successfully");
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            txtUserID.Text = (tableUser.Rows.Count + 1).ToString();
+            txtUserID.Text = funcs.getLatestID().ToString();
             txtUsername.Text = "";
             txtUserPassword.Text = "";
             txtStaffID.Text = "";
             txtStaffName.Text = "";
             cmbStaffTel.Text = "";
-            gridUser.DataSource = tableUser;
+            txtStaffPosition.Text = "";
+            refreshGrid();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -114,7 +119,7 @@ namespace PABMS
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                string query = "UPDATE tbUser SET Username = @Username, UserPassword = @UserPassword, StaffID = @StaffID, StaffName = @StaffName, StaffTel = @StaffTel WHERE UserID = @UserID";
+                string query = "UPDATE tbUser SET Username = @Username, UserPassword = @UserPassword, StaffID = @StaffID, StaffName = @StaffName, StaffTel = @StaffTel, StaffPosition = @StaffPosition WHERE UserID = @UserID";
                 using (SqlCommand command = new SqlCommand(query, con))
                 {
                     command.Parameters.AddWithValue("@Username", txtUsername.Text);
@@ -122,6 +127,7 @@ namespace PABMS
                     command.Parameters.AddWithValue("@StaffID", Convert.ToInt32(txtStaffID.Text));
                     command.Parameters.AddWithValue("@StaffName", txtStaffName.Text);
                     command.Parameters.AddWithValue("@StaffTel", cmbStaffTel.Text);
+                    command.Parameters.AddWithValue("@StaffPosition", txtStaffPosition.Text);
                     command.Parameters.AddWithValue("@UserID", userID);
 
                     command.ExecuteNonQuery();
@@ -129,29 +135,15 @@ namespace PABMS
                 con.Close();
             }
 
-            tableUser.Clear();
-            fillGridWithNewData();
+            userTable.Clear();
+            refreshGrid();
             MessageBox.Show("Data updated successfully");
         }
 
-        private void fillGridWithNewData()
+        void refreshGrid()
         {
-            try
-            {
-                using (SqlConnection con = new SqlConnection(connectionString))
-                {
-                    con.Open();
-                    string query = "SELECT * FROM tbUser";
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, con);
-                    adapter.Fill(tableUser);
-                    con.Close();
-                }
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine($"Error connecting to the database: {ex.Message}");
-            }
-            gridUser.DataSource = tableUser;
+            funcs.addFirst10RowsToDataTable();
+            gridUser.DataSource = userTable;
         }
 
         DataTable userToDataTable(List<User> users)
@@ -163,10 +155,11 @@ namespace PABMS
             table.Columns.Add("StaffID", typeof(int));
             table.Columns.Add("StaffName", typeof(string));
             table.Columns.Add("StaffTel", typeof(string));
+            table.Columns.Add("StaffPosition", typeof(string));
 
             foreach (User user in users)
             {
-                table.Rows.Add(user.UserID, user.Username, user.UserPassword, user.StaffID, user.StaffName, user.StaffTel);
+                table.Rows.Add(user.UserID, user.Username, user.UserPassword, user.StaffID, user.StaffName, user.StaffTel, user.StaffPosition);
             }
 
             return table;
@@ -186,25 +179,13 @@ namespace PABMS
                         command.Parameters.AddWithValue("@StaffID", user.StaffID);
                         command.Parameters.AddWithValue("@StaffName", user.StaffName);
                         command.Parameters.AddWithValue("@StaffTel", user.StaffTel);
+                        command.Parameters.AddWithValue("@StaffPosition", user.StaffPosition);
 
                         command.ExecuteNonQuery();
                     }
                 }
                 con.Close();
             }
-        }
-
-        private void gridUser_CellClick(object sender, EventArgs e)
-        {
-            int index = gridUser.SelectedCells[0].RowIndex;
-            DataGridViewRow selectedRow = gridUser.Rows[index];
-
-            txtUserID.Text = selectedRow.Cells["UserID"].Value.ToString();
-            txtUsername.Text = selectedRow.Cells["Username"].Value.ToString();
-            txtUserPassword.Text = selectedRow.Cells["UserPassword"].Value.ToString();
-            txtStaffID.Text = selectedRow.Cells["StaffID"].Value.ToString();
-            txtStaffName.Text = selectedRow.Cells["StaffName"].Value.ToString();
-            cmbStaffTel.Text = selectedRow.Cells["StaffTel"].Value.ToString();
         }
 
         private void cmbStaffTel_SelectedIndexChanged(object sender, EventArgs e)
@@ -214,6 +195,7 @@ namespace PABMS
 
             txtStaffID.Text = row["StaffID"].ToString();
             txtStaffName.Text = row["StaffName"].ToString();
+            txtStaffPosition.Text = row["StaffPosition"].ToString();
         }
 
         DataTable tableStaff = new DataTable();
@@ -224,7 +206,7 @@ namespace PABMS
                 using (SqlConnection con = new SqlConnection(connectionString))
                 {
                     con.Open();
-                    string query = "SELECT StaffID, StaffName, StaffTel FROM tbStaff";
+                    string query = "SELECT StaffID, StaffName, StaffTel, StaffPosition FROM tbStaff";
                     SqlDataAdapter adapter = new SqlDataAdapter(query, con);
                     adapter.Fill(tableStaff);
                     con.Close();
@@ -251,6 +233,18 @@ namespace PABMS
             txtStaffID.Text = selectedRow.Cells["StaffID"].Value.ToString();
             txtStaffName.Text = selectedRow.Cells["StaffName"].Value.ToString();
             cmbStaffTel.Text = selectedRow.Cells["StaffTel"].Value.ToString();
+            txtStaffPosition.Text = selectedRow.Cells["StaffPosition"].Value.ToString();
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            funcs.info.id = Convert.ToInt32(txtSearch.Text);
+            funcs.searchByID();
+        }
+
+        private void gridUser_Scroll(object sender, ScrollEventArgs e)
+        {
+            funcs.addRowWhenScrollingEnds();
         }
     }
 }

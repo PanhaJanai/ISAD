@@ -5,7 +5,7 @@ using System.Data;
 
 namespace PABMS
 {
-    public class funcs
+    public class Funcs
     {
 
         public class Info
@@ -68,7 +68,7 @@ namespace PABMS
             return lastVisibleRowIndex == info.grid.Rows.Count - 1;
         }
 
-        public void addFirst10RowsToDataTable()
+        public void addFirst10RowsToDataTable(int i=1)
         {
             info.dt.Clear();
             info.offset = 0;
@@ -108,11 +108,15 @@ namespace PABMS
             }
         }
 
-        public void search()
+        /// <summary>
+        /// hello
+        /// </summary>
+        public void searchByID()
         {
             DataTable temp = new DataTable();
             using (SqlConnection con = new SqlConnection(info.connectionString))
             {
+                con.Open();
                 // execute SearchItemById with three arguments
                 using (SqlCommand cmd = new SqlCommand("SearchItemById", con))
                 {
@@ -126,6 +130,7 @@ namespace PABMS
                     }
                     info.grid.DataSource = temp;
                 }
+                con.Close();
             }
         }
         

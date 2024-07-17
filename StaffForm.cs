@@ -10,7 +10,7 @@ namespace PABMS
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
         DataTable staffTable = new DataTable();
         DataTable saveTable = new DataTable();
-        funcs funcs = new funcs();
+        Funcs funcs = new Funcs();
 
         byte[] staffPhoto = null;
 
@@ -18,8 +18,9 @@ namespace PABMS
         {
             InitializeComponent();
 
-            funcs.info = new funcs.Info(connectionString, "tbStaff", "StaffID", staffTable, gridStaff);
+            funcs.info = new Funcs.Info(connectionString, "tbStaff", "StaffID", staffTable, gridStaff);
             refreshGrid();
+            gridStaff.Columns["Photo"].Visible = false;
 
             saveTable = staffTable.Clone();
             txtID.Text = funcs.getLatestID().ToString();
@@ -36,19 +37,43 @@ namespace PABMS
             try
             {
                 staffPhoto = GetPhotoData();
-                Console.WriteLine("Photo data loaded successfully.");
-                pbStaffPhoto.Image = Image.FromStream(new MemoryStream(staffPhoto));
+                MessageBox.Show("Photo data loaded successfully.");
+                using (MemoryStream ms = new MemoryStream(staffPhoto))
+                {
+                    pbStaffPhoto.Image = Image.FromStream(ms);
+
+                    /*Bitmap bitmap = new Bitmap(pbStaffPhoto.Image);
+
+                    int width = bitmap.Width;
+                    int height = bitmap.Height;
+                    int colorDepth = 32; // 32 bits per pixel, change this if your bitmap uses a different color depth
+
+                    // Calculate memory usage in bytes
+                    long memoryUsage = (long)width * height * (colorDepth / 8);
+
+                    // Convert memory usage to a more readable format (e.g., MB)
+                    double memoryUsageInMB = memoryUsage / (1024.0 * 1024.0);
+
+                    // Prepare the message
+                    string message = $"Bitmap Size: {width}x{height}\n" +
+                                     $"Memory Usage: {memoryUsageInMB:F2} MB";
+
+                    // Show the message box
+                    MessageBox.Show(message, "Bitmap Information");*/
+
+                }
             }
             catch (OperationCanceledException ex)
             {
-                Console.WriteLine(ex.Message);
+                MessageBox.Show(ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                MessageBox.Show("An error occurred: " + ex.Message);
             }
         }
 
+        // call file dialog and get photo data
         public byte[] GetPhotoData()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -82,7 +107,6 @@ namespace PABMS
                 try
                 {
                     MemoryStream ms = new MemoryStream();
-                    // Specify the format directly
                     pbStaffPhoto.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
                     staffPhoto = ms.ToArray();
                     return staffPhoto;
@@ -107,7 +131,14 @@ namespace PABMS
             newRow["StaffTel"] = txtStaffTel.Text;
             newRow["Salary"] = Convert.ToDecimal(txtStaffSalary.Text);
             newRow["HiredDate"] = DateTime.Now;
-            newRow["Photo"] = pbStaffPhoto.Image == null ? DBNull.Value : getImageByteArray();
+            if (pbStaffPhoto.Image == null)
+            {
+                newRow["Photo"] = DBNull.Value;
+            }
+            else
+            {
+                newRow["Photo"] = staffPhoto;
+            }
             newRow["StoppedWork"] = cbStoppedWork.Checked;
 
             saveTable.Rows.Add(newRow);
@@ -146,6 +177,7 @@ namespace PABMS
 
                             cmd.Parameters.AddWithValue("@StoppedWork", row["StoppedWork"]);
 
+                            // make cmd accpet bigger image
                             cmd.ExecuteNonQuery();
                         }
                     }
@@ -160,7 +192,7 @@ namespace PABMS
                 MessageBox.Show("No changes to save");
             }
         }
-
+        #region ignore for now
         private void gridStaff_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewRow row = gridStaff.CurrentRow;
@@ -253,6 +285,18 @@ namespace PABMS
         private void StaffForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            funcs.info.id = Convert.ToInt32(txtSearch.Text);
+            funcs.searchByID();
+        }
+        #endregion
+
+        private void gridStaff_Scroll(object sender, ScrollEventArgs e)
+        {
+            funcs.addRowWhenScrollingEnds();
         }
     }
 }

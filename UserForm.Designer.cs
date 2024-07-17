@@ -48,6 +48,9 @@
             label5 = new Label();
             label7 = new Label();
             cmbStaffTel = new ComboBox();
+            btnSearch = new Button();
+            label8 = new Label();
+            txtStaffPosition = new TextBox();
             ((System.ComponentModel.ISupportInitialize)gridUser).BeginInit();
             SuspendLayout();
             // 
@@ -65,7 +68,7 @@
             // 
             txtUserPassword.BorderStyle = BorderStyle.FixedSingle;
             txtUserPassword.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtUserPassword.Location = new Point(439, 325);
+            txtUserPassword.Location = new Point(490, 328);
             txtUserPassword.Multiline = true;
             txtUserPassword.Name = "txtUserPassword";
             txtUserPassword.Size = new Size(250, 34);
@@ -75,7 +78,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label6.Location = new Point(302, 327);
+            label6.Location = new Point(353, 330);
             label6.Name = "label6";
             label6.Size = new Size(120, 29);
             label6.TabIndex = 38;
@@ -85,7 +88,7 @@
             // 
             txtUsername.BorderStyle = BorderStyle.FixedSingle;
             txtUsername.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtUsername.Location = new Point(439, 269);
+            txtUsername.Location = new Point(490, 272);
             txtUsername.Multiline = true;
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(250, 34);
@@ -95,7 +98,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label3.Location = new Point(302, 274);
+            label3.Location = new Point(353, 277);
             label3.Name = "label3";
             label3.Size = new Size(124, 29);
             label3.TabIndex = 36;
@@ -106,7 +109,7 @@
             txtStaffID.BorderStyle = BorderStyle.FixedSingle;
             txtStaffID.Enabled = false;
             txtStaffID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtStaffID.Location = new Point(876, 211);
+            txtStaffID.Location = new Point(1015, 213);
             txtStaffID.Multiline = true;
             txtStaffID.Name = "txtStaffID";
             txtStaffID.Size = new Size(250, 34);
@@ -116,7 +119,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label2.Location = new Point(739, 216);
+            label2.Location = new Point(841, 220);
             label2.Name = "label2";
             label2.Size = new Size(89, 29);
             label2.TabIndex = 40;
@@ -135,7 +138,7 @@
             // btnNew
             // 
             btnNew.BackColor = Color.FromArgb(192, 255, 255);
-            btnNew.Location = new Point(1196, 779);
+            btnNew.Location = new Point(1154, 755);
             btnNew.Name = "btnNew";
             btnNew.Size = new Size(152, 50);
             btnNew.TabIndex = 51;
@@ -145,7 +148,7 @@
             // btnUpdate
             // 
             btnUpdate.BackColor = Color.FromArgb(255, 192, 128);
-            btnUpdate.Location = new Point(883, 779);
+            btnUpdate.Location = new Point(896, 755);
             btnUpdate.Name = "btnUpdate";
             btnUpdate.Size = new Size(152, 50);
             btnUpdate.TabIndex = 50;
@@ -155,7 +158,7 @@
             // btnAdd
             // 
             btnAdd.BackColor = SystemColors.ActiveCaption;
-            btnAdd.Location = new Point(560, 779);
+            btnAdd.Location = new Point(588, 755);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(152, 50);
             btnAdd.TabIndex = 49;
@@ -165,7 +168,7 @@
             // btnSave
             // 
             btnSave.BackColor = Color.FromArgb(192, 192, 255);
-            btnSave.Location = new Point(278, 779);
+            btnSave.Location = new Point(294, 755);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(152, 50);
             btnSave.TabIndex = 48;
@@ -195,6 +198,7 @@
             gridUser.Size = new Size(1004, 188);
             gridUser.TabIndex = 53;
             gridUser.CellClick += gridUser_CellClick;
+            gridUser.Scroll += gridUser_Scroll;
             // 
             // txtUserID
             // 
@@ -202,7 +206,7 @@
             txtUserID.BorderStyle = BorderStyle.FixedSingle;
             txtUserID.Enabled = false;
             txtUserID.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtUserID.Location = new Point(439, 214);
+            txtUserID.Location = new Point(490, 217);
             txtUserID.Multiline = true;
             txtUserID.Name = "txtUserID";
             txtUserID.ReadOnly = true;
@@ -214,7 +218,7 @@
             label4.AutoSize = true;
             label4.BackColor = SystemColors.ButtonFace;
             label4.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.Location = new Point(302, 219);
+            label4.Location = new Point(353, 222);
             label4.Name = "label4";
             label4.Size = new Size(93, 29);
             label4.TabIndex = 36;
@@ -224,7 +228,7 @@
             // 
             txtStaffName.BorderStyle = BorderStyle.FixedSingle;
             txtStaffName.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            txtStaffName.Location = new Point(876, 268);
+            txtStaffName.Location = new Point(1015, 270);
             txtStaffName.Multiline = true;
             txtStaffName.Name = "txtStaffName";
             txtStaffName.Size = new Size(250, 34);
@@ -234,7 +238,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label5.Location = new Point(739, 268);
+            label5.Location = new Point(841, 272);
             label5.Name = "label5";
             label5.Size = new Size(131, 29);
             label5.TabIndex = 40;
@@ -244,7 +248,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label7.Location = new Point(739, 330);
+            label7.Location = new Point(841, 329);
             label7.Name = "label7";
             label7.Size = new Size(102, 29);
             label7.TabIndex = 40;
@@ -254,10 +258,41 @@
             // 
             cmbStaffTel.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
             cmbStaffTel.FormattingEnabled = true;
-            cmbStaffTel.Location = new Point(876, 325);
+            cmbStaffTel.Location = new Point(1015, 321);
             cmbStaffTel.Name = "cmbStaffTel";
             cmbStaffTel.Size = new Size(250, 37);
             cmbStaffTel.TabIndex = 60;
+            // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = SystemColors.ActiveCaption;
+            btnSearch.Location = new Point(695, 470);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(152, 34);
+            btnSearch.TabIndex = 49;
+            btnSearch.Text = "SEARCH";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            label8.Location = new Point(841, 380);
+            label8.Name = "label8";
+            label8.Size = new Size(153, 29);
+            label8.TabIndex = 40;
+            label8.Text = "Staff Position";
+            // 
+            // txtStaffPosition
+            // 
+            txtStaffPosition.BorderStyle = BorderStyle.FixedSingle;
+            txtStaffPosition.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
+            txtStaffPosition.Location = new Point(1015, 373);
+            txtStaffPosition.Multiline = true;
+            txtStaffPosition.Name = "txtStaffPosition";
+            txtStaffPosition.Size = new Size(250, 34);
+            txtStaffPosition.TabIndex = 41;
             // 
             // UserForm
             // 
@@ -269,11 +304,14 @@
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
+            Controls.Add(btnSearch);
             Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
+            Controls.Add(txtStaffPosition);
             Controls.Add(txtStaffName);
             Controls.Add(txtStaffID);
+            Controls.Add(label8);
             Controls.Add(label7);
             Controls.Add(label5);
             Controls.Add(label2);
@@ -315,5 +353,8 @@
         private Label label5;
         private Label label7;
         private ComboBox cmbStaffTel;
+        private Button btnSearch;
+        private Label label8;
+        private TextBox txtStaffPosition;
     }
 }

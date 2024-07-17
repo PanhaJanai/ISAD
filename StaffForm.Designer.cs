@@ -60,6 +60,7 @@
             label5 = new Label();
             cbStoppedWork = new CheckBox();
             txtStaffTel = new TextBox();
+            btnSearch = new Button();
             ((System.ComponentModel.ISupportInitialize)pbStaffPhoto).BeginInit();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridStaff).BeginInit();
@@ -286,6 +287,7 @@
             gridStaff.Size = new Size(1231, 289);
             gridStaff.TabIndex = 55;
             gridStaff.CellClick += gridStaff_CellClick;
+            gridStaff.Scroll += gridStaff_Scroll;
             // 
             // label12
             // 
@@ -375,6 +377,17 @@
             txtStaffTel.Size = new Size(250, 34);
             txtStaffTel.TabIndex = 35;
             // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = SystemColors.ActiveCaption;
+            btnSearch.Location = new Point(596, 515);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(115, 34);
+            btnSearch.TabIndex = 42;
+            btnSearch.Text = "SEARCH";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += btnSearch_Click;
+            // 
             // StaffForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -390,6 +403,7 @@
             Controls.Add(label14);
             Controls.Add(btnNew);
             Controls.Add(btnUpdate);
+            Controls.Add(btnSearch);
             Controls.Add(btnAdd);
             Controls.Add(btnSave);
             Controls.Add(txtSearch);
@@ -457,5 +471,6 @@
         private Label label5;
         private CheckBox cbStoppedWork;
         private TextBox txtStaffTel;
+        private Button btnSearch;
     }
 }

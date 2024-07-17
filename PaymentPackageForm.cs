@@ -45,17 +45,20 @@ namespace PABMS
         List<PaymentPackage> paymentPackages = new List<PaymentPackage>();
         List<PaymentPackage> savedPaymentPackages = new List<PaymentPackage>();
 
-        DataTable tablePaymentPackage = new DataTable();
-        DataTable tableSave = new DataTable();
+        DataTable paymentPackageTable = new DataTable();
+        DataTable saveTable = new DataTable();
         DataTable tableCus = new DataTable();
 
         string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
         FormLogin.User user;
+        Funcs funcs = new Funcs();
 
         public PaymentPackageForm()
         {
-            user = MainForm.staticUser;
+            //user = MainForm.staticUser;
             InitializeComponent();
+
+            funcs.info = new Funcs.Info(connectionString, "tbPaymentPackage", "PaymentPackageID", paymentPackageTable, gridPaymentPackage);
 
             btnAdd.Click += new EventHandler(btnAdd_Click);
             btnSave.Click += new EventHandler(btnSave_Click);
@@ -67,9 +70,9 @@ namespace PABMS
 
             gridPaymentPackage.CellClick += new DataGridViewCellEventHandler(gridPaymentPackage_CellClick);
 
-            fillGridWithNewData();
-            txtPaymentPackageID.Text = (tablePaymentPackage.Rows.Count + 1).ToString();
-            tableSave = tablePaymentPackage.Clone();
+            refreshGrid();
+            txtPaymentPackageID.Text = funcs.getLatestID().ToString();
+            saveTable = paymentPackageTable.Clone();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -82,7 +85,7 @@ namespace PABMS
                 PackageID = Convert.ToInt32(txtPackageID.Text),
                 PackagePrice = Convert.ToDouble(txtPackagePrice.Text),
                 CustomerID = Convert.ToInt32(txtCusID.Text),
-                CustomerName = txtCusName.SelectedText,
+                CustomerName = txtCusName.Text,
                 CustomerTel = cmbCusTel.Text,
                 StaffID = user.staffID,
                 StaffName = user.username,
@@ -96,16 +99,16 @@ namespace PABMS
         private void btnSave_Click(object sender, EventArgs e)
         {
             // convert all PaymentPackage objects to DataTable
-            tableSave = paymentPackageToDataTable(paymentPackages);
+            saveTable = paymentPackageToDataTable(paymentPackages);
 
             // Show dialogue box to make sure the data is correct
-            SavingDialogue saveDialogue = new SavingDialogue(tableSave);
+            SavingDialogue saveDialogue = new SavingDialogue(saveTable);
             saveDialogue.ShowDialog();
-            tableSave = saveDialogue.save_table;
+            saveTable = saveDialogue.save_table;
             saveDialogue.Dispose();
 
             // convert all datatable row into PaymentPackage objects of savedPaymentPackages
-            foreach (DataRow row in tableSave.Rows)
+            foreach (DataRow row in saveTable.Rows)
             {
                 PaymentPackage payment = new PaymentPackage();
                 payment.fromDataTable(row);
@@ -114,16 +117,16 @@ namespace PABMS
 
             ExecuteSqlCommands(savedPaymentPackages, "INSERT INTO tbPaymentPackage (PaymentDate, PaymentAmount, PackageID, PackageName, PackagePrice, CustomerID, CustomerName, CustomerTel, StaffID, StaffName, StaffTel) VALUES (@PaymentDate, @PaymentAmount, @PackageID, @PackageName, @PackagePrice, @CustomerID, @CustomerName, @CustomerTel, @StaffID, @StaffName, @StaffTel)");
 
-            tablePaymentPackage.Clear();
-            tableSave.Clear();
-            fillGridWithNewData();
+            paymentPackageTable.Clear();
+            saveTable.Clear();
+            refreshGrid();
 
             MessageBox.Show("Data saved successfully");
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            txtPaymentPackageID.Text = (tablePaymentPackage.Rows.Count + 1).ToString();
+            txtPaymentPackageID.Text = funcs.getLatestID().ToString();
             txtAmount.Text = "";
             datePayment.Value = DateTime.Now;
             txtPackageID.Text = "";
@@ -132,7 +135,7 @@ namespace PABMS
             txtCusName.Text = "";
             cmbCusTel.Text = "";
             txtPackageName.Text = "";
-            gridPaymentPackage.DataSource = tablePaymentPackage;
+            refreshGrid();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -163,8 +166,8 @@ namespace PABMS
                 con.Close();
             }
 
-            tablePaymentPackage.Clear();
-            fillGridWithNewData();
+            paymentPackageTable.Clear();
+            refreshGrid();
             MessageBox.Show("Data updated successfully");
         }
 
@@ -200,6 +203,12 @@ namespace PABMS
             }
         }
 
+        void refreshGrid()
+        {
+            funcs.addFirst10RowsToDataTable();
+            gridPaymentPackage.DataSource = paymentPackageTable;
+        }
+
         private void gridPaymentPackage_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             fillControlWithGridRow(gridPaymentPackage.CurrentRow);
@@ -224,25 +233,6 @@ namespace PABMS
             }
         }
 
-        void fillGridWithNewData()
-        {
-            try
-            {
-                using (SqlConnection con = new SqlConnection(connectionString))
-                {
-                    con.Open();
-                    string query = "SELECT * FROM tbPaymentPackage";
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, con);
-                    adapter.Fill(tablePaymentPackage);
-                    con.Close();
-                }
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine($"Error connecting to the database: {ex.Message}");
-            }
-            gridPaymentPackage.DataSource = tablePaymentPackage;
-        }
 
         void fillControlWithGridRow(DataGridViewRow row)
         {
@@ -319,5 +309,10 @@ namespace PABMS
         }
 
         #endregion
+
+        private void PaymentPackageForm_Load(object sender, EventArgs e)
+        {
+            user = Parent.Tag as FormLogin.User;
+        }
     }
 }
