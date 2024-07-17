@@ -1,0 +1,121 @@
+Scrolling:
+
+if (funcs.IsAtEndOfDataGridView())
+{
+    refreshGrid();
+}
+
+Ticket
+- Add --
+- Save --
+- Update --
+- New --
+- Search -- query from the db and not search then select
+- Grid clicking -- 
+- Get next primary key -- 
+- Combo boxes --
+- Grid's scrolling --
+
+
+Package
+- Add --
+- save --
+- Update --
+- New --
+- Search --
+- Grid clicking --
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling --
+
+
+Staff
+- Add --
+- Save --
+- Update 
+- New --
+- Search --
+- Photo Handling --
+- Grid clicking -- 
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling --
+
++ Problem with uploading large images --
++ Problem with having image data on top of image data making the app bloated --
+
+
+User
+- Add --
+- Save --
+- Update --
+- New --
+- Search --
+- Grid clicking --
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling --
+
+
+Customer
+- Add --
+- Save --
+- Update --
+- New --
+- Search --
+- Grid clicking --
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling --
+
+
+Bus
+- Add --
+- Save --
+- Update --
+- New --
+- Search --
+- Grid clicking --
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling --
+
+
+Truck
+- Add --
+- Save --
+- Update --
+- New --
+- Search --
+- Grid clicking --
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling --
+
+
+Payment Ticket
+- Add --
+- Save --
+- Update --
+- New --
+- Search --
+- Grid clicking --
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling
+
++ Cannot have empty row value
+
+
+Payment Package
+- Add --
+- Save --
+- Update --
+- New --
+- Search --
+- Grid clicking --
+- Get next primary key --
+- Combo boxes --
+- Grid's scrolling
+
++ cannot have empty cell
