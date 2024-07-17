@@ -10,7 +10,7 @@ Ticket
 - Save --
 - Update --
 - New --
-- Search -- query from the db and not search then select
+- Search --
 - Grid clicking -- 
 - Get next primary key -- 
 - Combo boxes --
@@ -102,9 +102,9 @@ Payment Ticket
 - Grid clicking --
 - Get next primary key --
 - Combo boxes --
-- Grid's scrolling
+- Grid's scrolling --
 
-+ Cannot have empty row value
++ Cannot have empty row value --
 
 
 Payment Package
@@ -116,6 +116,6 @@ Payment Package
 - Grid clicking --
 - Get next primary key --
 - Combo boxes --
-- Grid's scrolling
+- Grid's scrolling --
 
-+ cannot have empty cell
++ cannot have empty cell --

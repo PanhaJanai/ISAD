@@ -92,6 +92,7 @@
             gridPaymentPackage.RowTemplate.Height = 29;
             gridPaymentPackage.Size = new Size(1053, 255);
             gridPaymentPackage.TabIndex = 83;
+            gridPaymentPackage.Scroll += gridPaymentPackage_Scroll;
             // 
             // label14
             // 

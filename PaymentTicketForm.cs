@@ -53,8 +53,8 @@ namespace PABMS
 
         public PaymentTicketForm()
         {
-            funcs.info = new Funcs.Info(connectionString, "tbPaymentTicket", "PaymentTicketID", paymentTicketTable, gridPaymentTicket);
             InitializeComponent();
+            funcs.info = new Funcs.Info(connectionString, "tbPaymentTicket", "PaymentTicketID", paymentTicketTable, gridPaymentTicket);
 
             btnAdd.Click += new EventHandler(btnAdd_Click);
             btnSave.Click += new EventHandler(btnSave_Click);
@@ -237,7 +237,14 @@ namespace PABMS
 
             foreach (var column in columns)
             {
-                column.Value.Text = row.Cells[column.Key].Value.ToString();
+                try
+                {
+                    column.Value.Text = row.Cells[column.Key].Value.ToString();
+                }
+                catch
+                {
+                    continue;
+                }
             }
 
             datePayment.Value = Convert.ToDateTime(row.Cells["PaymentDate"].Value.ToString());
@@ -299,9 +306,11 @@ namespace PABMS
         private void PaymentTicketForm_Load(object sender, EventArgs e)
         {
             user = Parent.Tag as FormLogin.User;
+        }
 
-            // please disable column "StaffID" in gridPaymentTicket
-            
+        private void gridPaymentTicket_Scroll(object sender, ScrollEventArgs e)
+        {
+            funcs.addRowWhenScrollingEnds();
         }
     }
 }

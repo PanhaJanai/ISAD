@@ -64,7 +64,6 @@
             // 
             gridPaymentTicket.AllowUserToAddRows = false;
             gridPaymentTicket.AllowUserToDeleteRows = false;
-            gridPaymentTicket.BackgroundColor = Color.FromArgb(128, 255, 128);
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
@@ -85,6 +84,7 @@
             gridPaymentTicket.RowTemplate.Height = 29;
             gridPaymentTicket.Size = new Size(1052, 291);
             gridPaymentTicket.TabIndex = 68;
+            gridPaymentTicket.Scroll += gridPaymentTicket_Scroll;
             // 
             // label14
             // 

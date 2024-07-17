@@ -249,7 +249,13 @@ namespace PABMS
 
             foreach (var column in columns)
             {
-                column.Value.Text = row.Cells[column.Key].Value.ToString();
+                try
+                {
+                    column.Value.Text = row.Cells[column.Key].Value.ToString();
+                } catch
+                {
+                    continue;
+                }
             }
 
             datePayment.Value = Convert.ToDateTime(row.Cells["PaymentDate"].Value);
@@ -313,6 +319,11 @@ namespace PABMS
         private void PaymentPackageForm_Load(object sender, EventArgs e)
         {
             user = Parent.Tag as FormLogin.User;
+        }
+
+        private void gridPaymentPackage_Scroll(object sender, ScrollEventArgs e)
+        {
+            funcs.addRowWhenScrollingEnds();
         }
     }
 }
